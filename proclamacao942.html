@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROCLAMAÇÃO TURMA AMPLIADA (ART. 942 DO CPC)</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .header {
+    width: 100%;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+    color: white;
+    padding: 24px 32px;
+    text-align: center;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+  .container { width: 100%; max-width: 800px; padding: 32px 24px; }
+  .card {
+    background: white; border-radius: 10px; padding: 28px;
+    margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    font-size: 15px; font-weight: 700; color: #1a3a5c;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .card h2 .num {
+    background: #1a3a5c; color: white; width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 13px; flex-shrink: 0;
+  }
+  label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  input[type="text"], input[type="password"], select, textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #d0d5dd;
+    border-radius: 8px; font-size: 14px; font-family: inherit;
+    transition: border-color 0.2s; background: white;
+  }
+  input:focus, textarea:focus { outline: none; border-color: #2c5f8a; box-shadow: 0 0 0 3px rgba(44,95,138,0.12); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .help-text { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.4; }
+  .row { display: flex; gap: 14px; margin-bottom: 14px; }
+  .row > div { flex: 1; }
+
+  /* Drop Zone */
+  .drop-zone {
+    border: 2px dashed #c0c8d4; border-radius: 10px; padding: 36px 20px;
+    text-align: center; cursor: pointer; transition: all 0.25s; background: #f8f9fb;
+  }
+  .drop-zone:hover, .drop-zone.dragover { border-color: #2c5f8a; background: #edf2f8; }
+  .drop-zone.loaded { border-color: #2e7d32; background: #e8f5e9; }
+  .drop-zone .icon { font-size: 36px; margin-bottom: 8px; }
+  .drop-zone .text { font-size: 14px; color: #555; }
+  .drop-zone .filename { font-size: 13px; color: #2e7d32; font-weight: 600; margin-top: 6px; }
+  .drop-zone input { display: none; }
+
+  /* PDF file list */
+  .pdf-file-list { margin-top: 10px; }
+  .pdf-file-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 10px; background: #f8f9fb; border: 1px solid #e0e0e0;
+    border-radius: 6px; margin-bottom: 4px; font-size: 12px;
+  }
+  .pdf-file-item .file-name { color: #333; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pdf-file-item .file-remove {
+    background: none; border: none; color: #c62828; font-size: 16px;
+    cursor: pointer; padding: 0 4px; margin-left: 8px; font-weight: 700; line-height: 1;
+  }
+  .pdf-file-item .file-remove:hover { color: #b71c1c; }
+  .pdf-counter {
+    font-size: 12px; font-weight: 600; color: #1a3a5c; margin-top: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pdf-counter .clear-all {
+    font-size: 11px; color: #c62828; cursor: pointer; background: none;
+    border: none; font-family: inherit; text-decoration: underline;
+  }
+  .pdf-counter .clear-all:hover { color: #b71c1c; }
+
+  /* Buttons */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: linear-gradient(135deg, #1a3a5c, #2c5f8a); color: white; }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,58,92,0.3); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary { background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+  .btn-secondary:hover:not(:disabled) { background: #bbdefb; }
+  .btn-danger { background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+  .btn-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .btn-sm { padding: 8px 16px; font-size: 13px; width: auto; display: inline-flex; }
+
+  /* Status */
+  .status { margin-top: 16px; padding: 14px 18px; border-radius: 8px; font-size: 13px; display: none; white-space: pre-line; }
+  .status.success { display: block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .status.error { display: block; background: #fbe9e7; color: #c62828; border: 1px solid #ef9a9a; }
+  .status.info { display: block; background: #e3f2fd; color: #1565c0; border: 1px solid #90caf9; }
+  .status.warning { display: block; background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+
+  /* Validation list */
+  .validation-list { margin-top: 12px; font-size: 13px; }
+  .validation-list div { padding: 4px 0; }
+  .val-ok { color: #2e7d32; }
+  .val-miss { color: #c62828; font-weight: 600; }
+  .val-extra { color: #e65100; }
+
+  /* Process card */
+  .proc-card {
+    background: #f8f9fb; border: 1px solid #e0e0e0; border-radius: 10px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .proc-card h3 { font-size: 14px; color: #1a3a5c; margin-bottom: 12px; font-weight: 700; }
+  .proc-card .proc-info { font-size: 13px; color: #555; margin-bottom: 8px; line-height: 1.6; }
+  .proc-card .proc-info strong { color: #1a1a2e; }
+
+  /* Vote buttons */
+  .vote-group { margin: 12px 0; }
+  .vote-group label { font-size: 13px; font-weight: 700; color: #1a3a5c; margin-bottom: 8px; }
+  .vote-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .vote-btn {
+    padding: 8px 16px; border-radius: 8px; border: 2px solid #d0d5dd;
+    background: white; cursor: pointer; font-size: 12px; font-weight: 600;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .vote-btn:hover { border-color: #2c5f8a; background: #edf2f8; }
+  .vote-btn.selected { border-color: #1a3a5c; background: #1a3a5c; color: white; }
+  .vote-btn.selected-relator { border-color: #2e7d32; background: #2e7d32; color: white; }
+  .vote-btn.selected-divergencia { border-color: #c62828; background: #c62828; color: white; }
+  .vote-btn.selected-medio { border-color: #e65100; background: #e65100; color: white; }
+  .vote-btn.selected-ressalva { border-color: #6a1b9a; background: #6a1b9a; color: white; }
+  .vote-btn.selected-diferente { border-color: #4a148c; background: #4a148c; color: white; }
+
+  .vote-detail { margin-top: 8px; }
+  .vote-detail textarea { min-height: 50px; font-size: 12px; }
+
+  /* Checkbox toggle */
+  .toggle-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+  .toggle-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+  .toggle-row label { font-size: 13px; cursor: pointer; margin-bottom: 0; }
+
+  /* Proclamation preview */
+  .proclamation-box {
+    background: #fffde7; border: 1px solid #fff59d; border-radius: 8px;
+    padding: 16px; margin-top: 12px; font-size: 13px; line-height: 1.7;
+    color: #333;
+  }
+  .proclamation-box.inconclusivo {
+    background: #fbe9e7; border-color: #ef9a9a;
+  }
+  .proclamation-edit {
+    width: 100%; min-height: 120px; font-size: 13px; line-height: 1.7;
+    font-family: inherit; margin-top: 8px;
+  }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 12px; }
+  .data-table th { background: #1a3a5c; color: white; padding: 8px 10px; text-align: left; font-weight: 600; }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid #e0e0e0; vertical-align: top; }
+  .data-table td:nth-child(5), .data-table td:nth-child(7) { max-width: 200px; word-wrap: break-word; font-size: 11px; line-height: 1.4; }
+  .data-table tr:hover { background: #f5f7fa; }
+  .data-table input, .data-table select { font-size: 11px; padding: 4px 6px; border: 1px solid #d0d5dd; border-radius: 4px; width: 100%; }
+
+  /* Progress */
+  .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin: 12px 0; overflow: hidden; }
+  .progress-bar .fill { height: 100%; background: linear-gradient(135deg, #1a3a5c, #2c5f8a); border-radius: 3px; transition: width 0.3s; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; }
+  .tab {
+    padding: 8px 16px; border-radius: 8px 8px 0 0; border: 1px solid #d0d5dd;
+    border-bottom: none; background: #f0f2f5; cursor: pointer; font-size: 13px;
+    font-weight: 600; color: #666; font-family: inherit;
+  }
+  .tab.active { background: white; color: #1a3a5c; border-bottom: 2px solid white; margin-bottom: -1px; }
+
+  .footer { text-align: center; font-size: 11px; color: #999; padding: 16px; }
+  .hidden { display: none !important; }
+
+  /* Collapsible */
+  .collapsible-header { cursor: pointer; user-select: none; }
+  .collapsible-header::before { content: "▸ "; }
+  .collapsible-header.open::before { content: "▾ "; }
+
+  /* Editable cell */
+  .editable-cell { cursor: text; padding: 4px; border-radius: 4px; }
+  .editable-cell:hover { background: #e3f2fd; }
+  .editable-cell:focus { outline: 2px solid #2c5f8a; background: white; }
+
+  /* Loading spinner */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 1000; box-shadow: 0 4px 16px rgba(0,0,0,0.15); transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: #2e7d32; color: white; }
+  .toast.error { background: #c62828; color: white; }
+
+  /* Action bar */
+  .action-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    padding: 12px 20px; background: white; border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 20px;
+  }
+
+  /* Proclamation modal */
+  .proclam-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .proclam-overlay.open { opacity: 1; pointer-events: auto; }
+  .proclam-modal {
+    background: white; border-radius: 14px; padding: 24px 28px;
+    width: 92%; max-width: 750px; max-height: 88vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+    transform: translateY(20px); transition: transform 0.25s;
+  }
+  .proclam-overlay.open .proclam-modal { transform: translateY(0); }
+  .proclam-modal h3 {
+    font-size: 14px; color: #1a3a5c; margin-bottom: 12px; font-weight: 700;
+    padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;
+  }
+  .proclam-modal textarea {
+    flex: 1; min-height: 300px; width: 100%; font-size: 14px; line-height: 1.8;
+    font-family: inherit; padding: 16px; border: 1.5px solid #d0d5dd;
+    border-radius: 8px; resize: vertical;
+  }
+  .proclam-modal textarea:focus { outline: none; border-color: #2c5f8a; box-shadow: 0 0 0 3px rgba(44,95,138,0.12); }
+  .proclam-modal .modal-actions {
+    display: flex; gap: 10px; margin-top: 14px; justify-content: flex-end; flex-wrap: wrap;
+  }
+  .proclam-modal .proc-summary {
+    font-size: 12px; color: #666; margin-bottom: 10px; line-height: 1.5;
+  }
+  .proclam-status { font-size: 12px; margin-top: 6px; color: #2e7d32; font-weight: 600; }
+
+  /* Search */
+  .search-bar { position: relative; margin-bottom: 16px; }
+  .search-bar input {
+    width: 100%; padding: 10px 14px 10px 38px; border: 1.5px solid #d0d5dd;
+    border-radius: 8px; font-size: 14px; font-family: inherit;
+    transition: border-color 0.2s; background: white;
+  }
+  .search-bar input:focus { outline: none; border-color: #2c5f8a; box-shadow: 0 0 0 3px rgba(44,95,138,0.12); }
+  .search-bar .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 16px; color: #999; pointer-events: none;
+  }
+  .search-bar .search-clear {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; font-size: 18px; color: #999; cursor: pointer;
+    display: none; padding: 0 4px; font-family: inherit;
+  }
+  .search-bar .search-clear:hover { color: #c62828; }
+  .proc-card.highlight { box-shadow: 0 0 0 3px #2c5f8a, 0 4px 16px rgba(44,95,138,0.25); transition: box-shadow 0.3s; }
+  .search-counter { font-size: 12px; color: #888; margin-top: 4px; }
+
+  /* Settings gear */
+  .header-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .gear-btn {
+    background: none; border: none; color: white; font-size: 22px; cursor: pointer;
+    opacity: 0.8; transition: all 0.25s; padding: 4px; line-height: 1;
+  }
+  .gear-btn:hover { opacity: 1; transform: rotate(45deg); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: white; border-radius: 12px; padding: 28px; width: 90%; max-width: 520px;
+    max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    transform: translateY(20px); transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal h2 { font-size: 16px; color: #1a3a5c; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .modal .close-btn {
+    position: absolute; top: 16px; right: 20px; background: none; border: none;
+    font-size: 22px; color: #999; cursor: pointer; padding: 4px;
+  }
+  .modal .close-btn:hover { color: #c62828; }
+  .modal-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+  .modal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .api-status { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+  .api-status.active { background: #e8f5e9; color: #2e7d32; }
+  .api-status.inactive { background: #f5f5f5; color: #999; }
+  .api-default { font-size: 11px; color: #e65100; font-style: italic; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <h1>PROCLAMAÇÃO TURMA AMPLIADA (ART. 942 DO CPC)</h1>
+    <button class="gear-btn" onclick="toggleConfig()" title="Configurações de API">⚙</button>
+  </div>
+  <p>Gerador de proclamação para julgamento ampliado (Art. 942, CPC) — TRF1</p>
+</div>
+
+<!-- MODAL DE CONFIGURAÇÕES -->
+<div class="modal-overlay" id="configModal" onclick="if(event.target===this)toggleConfig()">
+  <div class="modal" style="position:relative">
+    <button class="close-btn" onclick="toggleConfig()">✕</button>
+    <h2>⚙ Configurações — Chaves de API</h2>
+    <div class="help-text" style="margin-bottom:16px">Configure as chaves de IA para extração automática. As chaves ficam salvas apenas no seu navegador.</div>
+
+    <div class="modal-section">
+      <label>Google Gemini <span class="api-status" id="statusGemini">—</span></label>
+      <input type="password" id="apiKeyGemini" placeholder="Usando chave padrão — cole aqui para substituir" oninput="onApiKeyChange()">
+      <div class="api-default" id="geminiDefault"></div>
+      <div style="margin-top:8px">
+        <label style="font-size:12px">Modelo Gemini</label>
+        <select id="selectModeloGemini" onchange="onApiKeyChange()" style="font-size:13px; width:auto">
+          <option value="gemini-2.5-flash">Gemini 2.5 Flash (padrão)</option>
+          <option value="gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</option>
+          <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <label>Anthropic Claude <span class="api-status" id="statusAnthropic">—</span></label>
+      <input type="password" id="apiKeyAnthropic" placeholder="sk-ant-..." oninput="onApiKeyChange()">
+    </div>
+
+    <div class="modal-section">
+      <label>OpenAI <span class="api-status" id="statusOpenAI">—</span></label>
+      <input type="password" id="apiKeyOpenAI" placeholder="sk-..." oninput="onApiKeyChange()">
+    </div>
+
+    <div class="modal-section">
+      <label>Provedor ativo para extração</label>
+      <select id="provedorAtivo" onchange="onApiKeyChange()" style="margin-top:4px">
+        <option value="gemini">Google Gemini</option>
+        <option value="anthropic">Anthropic Claude</option>
+        <option value="openai">OpenAI</option>
+      </select>
+      <div class="help-text" style="margin-top:4px">Selecione qual IA será usada no botão "Processar Certidões com IA".</div>
+    </div>
+
+    <button class="btn btn-primary btn-sm" onclick="toggleConfig()" style="margin-top:8px">Salvar e fechar</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- DICA -->
+  <div style="background:#fff3e0; border:1px solid #ffcc80; border-radius:8px; padding:12px 16px; margin-bottom:12px; font-size:13px; color:#e65100;">
+    <strong>💡 Fluxo:</strong> Configure a sessão → Importe as certidões (PDF ou texto) → Processe com IA → Insira os votos dos convocados → Gere o Word completo com todas as proclamações.
+  </div>
+
+  <!-- BARRA DE AÇÕES -->
+  <div class="action-bar">
+    <button class="btn btn-secondary btn-sm" onclick="exportarSessao()">💾 Salvar sessão</button>
+    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importFile').click()">📂 Importar sessão</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarSessao(event)">
+    <button class="btn btn-danger btn-sm" onclick="limparSessao()">🗑️ Limpar dados</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ETAPA 1: CONFIGURAÇÃO DA SESSÃO -->
+  <!-- ============================================================ -->
+  <div class="card">
+    <h2><span class="num">1</span> Configuração da Sessão 942</h2>
+    <div class="row">
+      <div>
+        <label>Órgão Julgador (Turma)</label>
+        <input type="text" id="turma" placeholder="Ex: DÉCIMA TERCEIRA TURMA">
+      </div>
+      <div>
+        <label>Data da Sessão 942</label>
+        <input type="text" id="dataSessao942" placeholder="dd/mm/aaaa" maxlength="10">
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <label>Presidente da Sessão</label>
+      <input type="text" id="presidente942" placeholder="Ex: Roberto Carvalho Veloso" style="margin-bottom:12px">
+    </div>
+    <div style="margin-top:10px; padding-top:12px; border-top:1px solid #e0e0e0">
+      <label>Convocados padrão para a sessão 942</label>
+      <div class="help-text" style="margin-bottom:8px">Estes nomes preencherão automaticamente todos os processos. Você pode alterar individualmente na etapa de votação.</div>
+      <div class="row">
+        <div>
+          <input type="text" id="convocadoPadrao1" placeholder="Convocado 1 (ex: Carlos Moreira Alves)">
+          <label style="font-size:11px; display:flex; align-items:center; gap:4px; margin-top:4px; cursor:pointer">
+            <input type="checkbox" id="convocadoPadraoJuiz1" style="width:14px; height:14px" onchange="saveFields942()">
+            Juiz(a) convocado(a)
+          </label>
+        </div>
+        <div>
+          <input type="text" id="convocadoPadrao2" placeholder="Convocado 2 (ex: Ivani Silva da Luz)">
+          <label style="font-size:11px; display:flex; align-items:center; gap:4px; margin-top:4px; cursor:pointer">
+            <input type="checkbox" id="convocadoPadraoJuiz2" style="width:14px; height:14px" onchange="saveFields942()">
+            Juiz(a) convocado(a)
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ETAPA 2: IMPORTAÇÃO DAS CERTIDÕES -->
+  <!-- ============================================================ -->
+  <div class="card">
+    <h2><span class="num">2</span> Importação das Certidões de Julgamento</h2>
+
+    <label>2A — Upload de PDFs das certidões</label>
+    <div class="drop-zone" id="dropZonePdf">
+      <div class="icon">📄</div>
+      <div class="text">Arraste arquivos PDF aqui ou clique para selecionar<br><small>(múltiplos arquivos — pode adicionar em várias levas)</small></div>
+      <input type="file" id="pdfInput" accept=".pdf" multiple>
+    </div>
+    <div class="pdf-counter hidden" id="pdfCounter">
+      <span id="pdfCounterText"></span>
+      <button class="clear-all" onclick="limparTodosPdfs()">Remover todos</button>
+    </div>
+    <div class="pdf-file-list" id="pdfFileList"></div>
+
+    <div style="margin-top:16px">
+      <label>— OU cole o texto das certidões —</label>
+      <textarea id="certidoesTexto" placeholder="Cole aqui o texto de uma ou mais certidões de julgamento.&#10;Separe certidões diferentes com uma linha em branco ou ---" rows="8"></textarea>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>2B — Lista de processos para controle</label>
+      <textarea id="cnjControle" placeholder="Cole os números dos processos que deveriam estar no lote.&#10;Pode colar texto com outras informações — o sistema extrai apenas os números automaticamente.&#10;&#10;Ex: 0021814-48.2010.4.01.3300&#10;    1078535-71.2022.4.01.3400" rows="4"></textarea>
+      <div class="help-text">Aceita texto livre — o sistema extrai automaticamente os números de processo (padrão 0000000-00.0000.0.00.0000) e cruza com as certidões.</div>
+    </div>
+
+    <div style="margin-top:16px">
+      <button class="btn btn-secondary" id="btnProcessar" onclick="processarCertidoes()">
+        🔍 Processar Certidões com IA
+      </button>
+      <button class="btn btn-sm" style="margin-top:8px; background:#f5f5f5; color:#555; border:1px solid #ccc;" onclick="copiarPrompt()">
+        📋 Copiar prompt para consulta manual (sem API)
+      </button>
+      <div style="margin-top:10px">
+        <label class="collapsible-header" onclick="this.classList.toggle('open'); document.getElementById('respostaManualBox').classList.toggle('hidden')">Colar resposta da IA externa</label>
+        <div id="respostaManualBox" class="hidden" style="margin-top:8px">
+          <textarea id="respostaManual" placeholder="Cole aqui o JSON retornado pela IA externa..." rows="6" style="font-size:12px; font-family:monospace;"></textarea>
+          <button class="btn btn-secondary btn-sm" style="margin-top:6px" onclick="processarRespostaManual()">✅ Processar resposta</button>
+        </div>
+      </div>
+      <div class="progress-bar hidden" id="progressBar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+      <div class="status" id="statusProcessar"></div>
+      <div class="validation-list" id="validationList"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ETAPA 3: CONFERÊNCIA DOS DADOS EXTRAÍDOS -->
+  <!-- ============================================================ -->
+  <div class="card" id="cardConferencia">
+    <h2><span class="num">3</span> Conferência dos Dados Extraídos</h2>
+    <div class="help-text" style="margin-bottom:12px">Confira e corrija os dados extraídos pela IA antes de prosseguir. Clique em qualquer campo para editar.</div>
+    <div id="tabelaConferencia" style="overflow-x:auto">
+      <div style="text-align:center; color:#aaa; padding:24px; font-size:13px;">Aguardando processamento das certidões (Etapa 2)...</div>
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn btn-primary" onclick="iniciarVotacao()">✅ Dados corretos — Prosseguir para Votação</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ETAPA 4: VOTAÇÃO DO 942 -->
+  <!-- ============================================================ -->
+  <div class="card" id="cardVotacao">
+    <h2><span class="num">4</span> Votação do 942</h2>
+    <div class="help-text" style="margin-bottom:12px">Para cada processo, insira os votos dos magistrados convocados e confirme se os votos originais foram mantidos.</div>
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="buscaProcesso" placeholder="Buscar pelo início do número do processo (ex: 0021814)..." oninput="buscarProcesso(this.value)">
+      <button class="search-clear" id="buscaClear" onclick="limparBusca()">✕</button>
+      <div class="search-counter" id="buscaCounter"></div>
+    </div>
+    <div id="votacaoContainer">
+      <div style="text-align:center; color:#aaa; padding:24px; font-size:13px;">Aguardando conferência dos dados (Etapa 3)...</div>
+    </div>
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" id="btnGerarWord" onclick="gerarWord()">📄 Gerar Word completo com todas as proclamações (.docx)</button>
+      <div class="status" id="statusWord"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Proclamação 942 — Ferramenta para TRF1 — Requer conexão para API Anthropic</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal de Proclamação -->
+<div class="proclam-overlay" id="proclamOverlay" onclick="if(event.target===this)fecharProclamacao()">
+  <div class="proclam-modal">
+    <h3 id="proclamModalTitle">Proclamação</h3>
+    <div class="proc-summary" id="proclamModalSummary"></div>
+    <textarea id="proclamModalText"></textarea>
+    <div class="proclam-status" id="proclamModalStatus"></div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" onclick="copiarProclamacao()">📋 Copiar texto</button>
+      <button class="btn btn-primary btn-sm" onclick="salvarProclamacao()">✅ Salvar e fechar</button>
+      <button class="btn btn-sm" style="background:#f5f5f5; color:#666; border:1px solid #ccc" onclick="fecharProclamacao()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="jszip.min.js"></script>
+<script src="docx.iife.js"></script>
+<script>
+// ============================================================
+//  CONFIGURAÇÃO pdf.js
+// ============================================================
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// ============================================================
+//  ESTADO GLOBAL
+// ============================================================
+let processosExtraidos = []; // dados JSON extraídos pela IA
+let textoCertidoes = "";     // texto bruto das certidões
+let pdfTextos = [];          // textos extraídos dos PDFs
+
+// ============================================================
+//  CONSTANTES DE GÊNERO (mesma lógica do Prévia)
+// ============================================================
+const MASC_NAMES = new Set(["EDIVALDO","GILMAR","OSMIR","EXPEDITO","JALDIR","CELSO","JULIO","SILVIO","MISAEL","GUSTAVO","OTAVIO","FELIPE","DIEGO","EDUARDO","LUIZ","DANILO","ARTHUR","JOAO","RICARDO","MARCO","MARCOS","MAGNO","PEDRO","RAFAEL","RODRIGO","JOSE","IVAN","GREGORIO","ANDRE","CARLOS","JOAQUIM","LEVY","REGINALDO","ORLY","HUMBERTO","DYOGO","RENATO","LEONARDO","DOUGLAS","DANIEL","BRUNO","MARCIO","EWERTON","LUCAS","ADRIANO","ALESSANDRO","GEORGES","AUGUSTO","BARTOLOMEU","ADNALDO","LUIS","JORGE","DANTE","VICENTE","GUILHERME","HENRIQUE","CLEMENTE","ROQUE","ESDRA","ALEXANDRE","ALBERTO","ALFREDO","ALMIR","ALVARO","AMARILDO","ANDERSON","ANTONIO","ARNALDO","ARTUR","BENEDITO","BERNARDO","CAIO","CASSIO","CLAUDIO","CLODOMIR","CRISTIANO","DAVI","DAVID","DIMAS","DIOGO","DOMINGOS","EDGAR","EDSON","ELISEU","EMERSON","ENRIQUE","ERASMO","ERNESTO","ESTEVAO","EVANDRO","EVERTON","FABIO","FABRICIO","FERNANDO","FLAVIO","FRANCISCO","FREDERICO","GABRIEL","GERALDO","GERSON","GIOVANI","HELIO","HUGO","ITALO","JAIME","JEFFERSON","JONAS","JONATHAN","JULIANO","LEANDRO","LUCIANO","LUCIO","MANOEL","MANUEL","MARCELO","MARIO","MATEUS","MATHEUS","MAURO","MAXWELL","MICHEL","MIGUEL","MILTON","MOISES","MURILO","NELSON","NILSON","NILTON","NORBERTO","OCTAVIO","ORLANDO","OSCAR","OSVALDO","OTAVIANO","PAULO","PLINIO","RAIMUNDO","RAMON","RAUL","RENZO","ROBERTO","ROGERIO","ROMULO","RONALDO","RUBENS","RUI","SAMUEL","SANDRO","SERGIO","SEVERINO","SIDENEY","SIDNEY","TARCISIO","TIAGO","THIAGO","TOMAZ","UBIRATAN","ULISSES","VAGNER","VALDIR","VITOR","WAGNER","WALDIR","WALTER","WASHINGTON","WELLINGTON","WENDEL","WILLIAM","WILSON","YURI","JAMIL","VLADIMIR","KASSIO","NUNCIO"]);
+const FEM_NAMES = new Set(["SOPHIA","ANA","MARIA","RENATA","PAULA","CAMILA","VIDA","EDELZUITA","AMANDA","PATRICIA","TAYANE","NATHALIA","POLLYANNA","ARIANE","ANGELA","LUCIANA","DANUBIA","LAIS","GISELLE","KASSIA","CAROLINA","MARIANA","BRUNA","SOLANGE","RAQUEL","JULIANA","ALESSA","BARBARA","THAMI","JESSICA","GABRIELA","FERNANDA","BEATRIZ","LARISSA","LETICIA","ISABELA","ISABELLA","DANIELA","VANESSA","TATIANA","VIVIANE","VIVIAN","ADRIANA","ALESSANDRA","ALINE","ANDREIA","ANDRESSA","BIANCA","CATARINA","CECILIA","CLARA","CRISTIANE","CRISTINA","DEBORA","DIANA","ELAINE","ELIANE","ERICA","FABIANA","FLAVIA","FRANCISCA","GEOVANA","GIOVANNA","GIOVANA","HELENA","INGRID","IRIS","IVANA","IVONE","JANAINA","JOANA","JULIA","JULIANE","KAREN","KARINA","KATIA","LAURA","LIANA","LIDIA","LILIANE","LORENA","LUANA","LUCIA","LUISA","LUIZA","MADALENA","MARCELA","MARCELLA","MARCIA","MARINA","MARTA","MIRIAM","MONICA","NATALIA","NICOLE","NINA","PRISCILA","PRISCILLA","RAFAELA","RAISSA","REBECA","REGINA","ROBERTA","ROSA","ROSANA","SABRINA","SANDRA","SARA","SARAH","SILVANA","SIMONE","SONIA","SUZANA","TATIANE","TEREZA","TERESA","THAIS","VALERIA","VANUSA","VERA","VIRGINIA","VITORIA","ZELIA","DENISE","ELISA","ELIZABETE","ELIZABETH","EMANUELA","ESTELA","EUGENIA","FABIANE","FATIMA","GLAUCIA","GLORIA","GRAZIELA","IARA","ILMA","IRENE","IVETE","JAQUELINE","JOSEFA","JOYCE","KARLA","LARA","LEILA","LELIA","LIGIA","LILIAN","LILIANA","LISA","LIVIA","LUCIARA","LUCIENE","LUCIMAR","MARA","MARGARETE","MARGARIDA","MARLENE","MILENA","MIRELLA","NADIA","NAIRA","NEUSA","NOEMIA","OLGA","PALOMA","PAMELA","PIETRA","POLIANA","RACHEL","RAIMUNDA","RITA","ROSANGELA","ROSELI","ROSILENE","SAMARA","SAMIRA","SELMA","SHEILA","SILVIA","SOCORRO","SOLEDAD","SUELENA","SUELI","SUELY","SUELLEN","TAIS","TANIA","TATIANI","THALITA","VALDIRENE","VANIA","VILMA","WANDA","YASMIM","YASMIN","ZILDA","ALICE","ALICIA","BETINA","CELIA","CINTHIA","CINTIA","CLAUDIA","CONCEICAO","DAIANE","DANIELE","EDNA","ELZA","EMILIA","EVA","GILDA","INES","IVONETE","LIDIANE","LILIAM","LOURDES","MANOELA","MARGARETH","MAYARA","MAYRA","MICHELE","NARA","NELMA","NEUZA","ROSEMARY","RUTH","SUZANE","TAINA","THAISA","THAYSA","VALDETE","ZULEICA","IVANI"]);
+
+function stripAccents(s) { return s.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+
+function detectarGenero(nome) {
+  if (!nome) return "M";
+  const first = stripAccents(nome.trim().split(/\s+/)[0].toUpperCase());
+  if (MASC_NAMES.has(first)) return "M";
+  if (FEM_NAMES.has(first)) return "F";
+  if (/[AE]$/.test(first) && !["JORGE","ANDRE","DANTE","VICENTE","ESDRA"].includes(first)) return "F";
+  return "M";
+}
+
+function tituloCompleto(nome, titulo, genero) {
+  const g = genero || detectarGenero(nome);
+  const t = (titulo || "").toUpperCase();
+  const isJuiz = /JU[IÍ]Z|CONVOCAD/.test(t);
+  if (g === "F") return isJuiz ? "Exma. Sra. Juíza Federal" : "Exma. Sra. Desembargadora Federal";
+  return isJuiz ? "Exmo. Sr. Juiz Federal" : "Exmo. Sr. Desembargador Federal";
+}
+
+function tituloAbreviado(nome, titulo) {
+  const g = detectarGenero(nome);
+  const t = (titulo || "").toUpperCase();
+  const isJuiz = /JU[IÍ]Z|CONVOCAD/.test(t);
+  if (g === "F") return isJuiz ? "Juíza Federal" : "Desembargadora Federal";
+  return isJuiz ? "Juiz Federal" : "Desembargador Federal";
+}
+
+function doDA(nome) {
+  return detectarGenero(nome) === "F" ? "da" : "do";
+}
+function doaDA(nome) {
+  return detectarGenero(nome) === "F" ? "da" : "do";
+}
+
+function toTitleCase(str) {
+  if (!str) return "";
+  const small = new Set(["de","da","do","dos","das","e","em","no","na","nos","nas"]);
+  return str.toLowerCase().split(/\s+/).map((w, i) => {
+    if (i > 0 && small.has(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(" ");
+}
+
+// ============================================================
+//  EXTRAÇÃO DE CNJ
+// ============================================================
+const CNJ_REGEX = /\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/g;
+
+function extrairCNJs(texto) {
+  const matches = texto.match(CNJ_REGEX) || [];
+  return [...new Set(matches)];
+}
+
+// ============================================================
+//  EXTRAÇÃO DE TEXTO DO PDF
+// ============================================================
+async function extrairTextoPDF(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let texto = "";
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    texto += content.items.map(item => item.str).join(" ") + "\n\n";
+  }
+  return limparTextoCertidao(texto);
+}
+
+function limparTextoCertidao(texto) {
+  // Encontra a primeira ocorrência de "sessão" (case insensitive) e remove tudo antes
+  const idx = texto.search(/sess[aã]o/i);
+  if (idx > 0) {
+    // Volta um pouco para pegar o início da linha/frase que contém "sessão"
+    const antes = texto.substring(0, idx);
+    const ultimaQuebraAntes = Math.max(antes.lastIndexOf("\n"), antes.lastIndexOf(". "));
+    const corte = ultimaQuebraAntes >= 0 ? ultimaQuebraAntes + 1 : idx;
+    return texto.substring(corte).trim();
+  }
+  return texto.trim();
+}
+
+// ============================================================
+//  DROP ZONE PDF
+// ============================================================
+const dropZonePdf = document.getElementById("dropZonePdf");
+const pdfInput = document.getElementById("pdfInput");
+
+dropZonePdf.addEventListener("click", () => pdfInput.click());
+dropZonePdf.addEventListener("dragover", e => { e.preventDefault(); dropZonePdf.classList.add("dragover"); });
+dropZonePdf.addEventListener("dragleave", () => dropZonePdf.classList.remove("dragover"));
+dropZonePdf.addEventListener("drop", e => {
+  e.preventDefault(); dropZonePdf.classList.remove("dragover");
+  if (e.dataTransfer.files.length) handlePdfFiles(e.dataTransfer.files);
+});
+pdfInput.addEventListener("change", e => { if (e.target.files.length) handlePdfFiles(e.target.files); });
+
+async function handlePdfFiles(files) {
+  const pdfs = Array.from(files).filter(f => f.name.toLowerCase().endsWith(".pdf"));
+  if (!pdfs.length) { showStatus("statusProcessar", "Selecione arquivos PDF.", "error"); return; }
+
+  showStatus("statusProcessar", `Extraindo texto de ${pdfs.length} PDF(s)...`, "info");
+
+  for (const f of pdfs) {
+    // Evitar duplicatas pelo nome
+    if (pdfTextos.some(p => p.nome === f.name)) continue;
+    try {
+      const texto = await extrairTextoPDF(f);
+      pdfTextos.push({ nome: f.name, texto });
+    } catch (err) {
+      pdfTextos.push({ nome: f.name, texto: "", erro: err.message });
+    }
+  }
+
+  renderPdfFileList();
+  const ok = pdfTextos.filter(p => !p.erro).length;
+  const erros = pdfTextos.filter(p => p.erro);
+  let msg = `✓ ${ok} PDF(s) carregado(s) com sucesso.`;
+  if (erros.length) msg += `\n⚠ Erro em ${erros.length}: ${erros.map(e => e.nome).join(", ")}`;
+  showStatus("statusProcessar", msg, erros.length ? "warning" : "success");
+
+  // Reset file input para permitir re-seleção do mesmo arquivo
+  pdfInput.value = "";
+}
+
+function renderPdfFileList() {
+  const listEl = document.getElementById("pdfFileList");
+  const counterEl = document.getElementById("pdfCounter");
+  const counterText = document.getElementById("pdfCounterText");
+
+  if (pdfTextos.length === 0) {
+    listEl.innerHTML = "";
+    counterEl.classList.add("hidden");
+    dropZonePdf.classList.remove("loaded");
+    return;
+  }
+
+  dropZonePdf.classList.add("loaded");
+  counterEl.classList.remove("hidden");
+  const ok = pdfTextos.filter(p => !p.erro).length;
+  const erros = pdfTextos.filter(p => p.erro).length;
+  counterText.textContent = `📄 ${pdfTextos.length} arquivo(s) carregado(s)${erros ? ` (${erros} com erro)` : ""}`;
+
+  let html = "";
+  pdfTextos.forEach((p, i) => {
+    const icon = p.erro ? "⚠️" : "✅";
+    const errMsg = p.erro ? ` — erro: ${p.erro}` : "";
+    html += `<div class="pdf-file-item">
+      <span class="file-name">${icon} ${p.nome}${errMsg}</span>
+      <button class="file-remove" title="Remover" onclick="removerPdf(${i})">✕</button>
+    </div>`;
+  });
+  listEl.innerHTML = html;
+}
+
+function removerPdf(index) {
+  pdfTextos.splice(index, 1);
+  renderPdfFileList();
+}
+
+function limparTodosPdfs() {
+  if (pdfTextos.length > 0 && !confirm(`Remover todos os ${pdfTextos.length} PDF(s)?`)) return;
+  pdfTextos = [];
+  renderPdfFileList();
+  showStatus("statusProcessar", "", "");
+  document.getElementById("statusProcessar").className = "status";
+}
+
+// ============================================================
+//  CONFIGURAÇÃO DE API (MODAL)
+// ============================================================
+const GEMINI_DEFAULT_KEY = "AIzaSyB-yHyorLVDhP6WE111SJc60er0LF1iEGg";
+const API_STORAGE_KEY = "proclamacao_942_apis";
+
+function toggleConfig() {
+  const modal = document.getElementById("configModal");
+  modal.classList.toggle("open");
+  if (modal.classList.contains("open")) atualizarStatusAPIs();
+}
+
+function getActiveApiKey() {
+  const provedor = document.getElementById("provedorAtivo").value;
+  if (provedor === "gemini") {
+    const custom = document.getElementById("apiKeyGemini").value.trim();
+    return { provedor, key: custom || GEMINI_DEFAULT_KEY, isDefault: !custom };
+  }
+  if (provedor === "anthropic") {
+    return { provedor, key: document.getElementById("apiKeyAnthropic").value.trim(), isDefault: false };
+  }
+  if (provedor === "openai") {
+    return { provedor, key: document.getElementById("apiKeyOpenAI").value.trim(), isDefault: false };
+  }
+  return { provedor: "gemini", key: GEMINI_DEFAULT_KEY, isDefault: true };
+}
+
+function onApiKeyChange() {
+  atualizarStatusAPIs();
+  salvarAPIs();
+}
+
+function atualizarStatusAPIs() {
+  const geminiKey = document.getElementById("apiKeyGemini").value.trim();
+  const anthropicKey = document.getElementById("apiKeyAnthropic").value.trim();
+  const openaiKey = document.getElementById("apiKeyOpenAI").value.trim();
+  const provedor = document.getElementById("provedorAtivo").value;
+
+  const setStatus = (id, hasKey) => {
+    const el = document.getElementById(id);
+    el.textContent = hasKey ? "✓ configurada" : "não configurada";
+    el.className = "api-status " + (hasKey ? "active" : "inactive");
+  };
+
+  setStatus("statusGemini", geminiKey || true); // sempre ativa (tem default)
+  setStatus("statusAnthropic", !!anthropicKey);
+  setStatus("statusOpenAI", !!openaiKey);
+
+  const defaultEl = document.getElementById("geminiDefault");
+  defaultEl.textContent = geminiKey ? "" : "Usando chave padrão embutida";
+}
+
+function salvarAPIs() {
+  try {
+    const data = {
+      gemini: document.getElementById("apiKeyGemini").value,
+      anthropic: document.getElementById("apiKeyAnthropic").value,
+      openai: document.getElementById("apiKeyOpenAI").value,
+      provedor: document.getElementById("provedorAtivo").value,
+      modeloGemini: document.getElementById("selectModeloGemini").value
+    };
+    localStorage.setItem(API_STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function restaurarAPIs() {
+  try {
+    const raw = localStorage.getItem(API_STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    if (data.gemini) document.getElementById("apiKeyGemini").value = data.gemini;
+    if (data.anthropic) document.getElementById("apiKeyAnthropic").value = data.anthropic;
+    if (data.openai) document.getElementById("apiKeyOpenAI").value = data.openai;
+    if (data.provedor) document.getElementById("provedorAtivo").value = data.provedor;
+    if (data.modeloGemini) document.getElementById("selectModeloGemini").value = data.modeloGemini;
+    atualizarStatusAPIs();
+  } catch(e) {}
+}
+
+async function chamarIA(prompt) {
+  const { provedor, key, isDefault } = getActiveApiKey();
+  if (!key) throw new Error(`Chave da API ${provedor} não configurada. Clique na ⚙ engrenagem para configurar.`);
+
+  if (provedor === "gemini") {
+    return await chamarGemini(prompt, key);
+  }
+
+  if (provedor === "anthropic") {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 8000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(`Anthropic retornou ${response.status}: ${err.error?.message || "Erro desconhecido"}`);
+    }
+    const data = await response.json();
+    return data.content.map(c => c.text || "").join("");
+  }
+
+  if (provedor === "openai") {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${key}` },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        max_tokens: 8000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(`OpenAI retornou ${response.status}: ${err.error?.message || "Erro desconhecido"}`);
+    }
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || "";
+  }
+
+  throw new Error("Provedor não reconhecido.");
+}
+
+async function chamarGemini(prompt, key) {
+  const modeloPrincipal = document.getElementById("selectModeloGemini").value || "gemini-2.5-flash";
+
+  // Fallback: Flash → Flash Lite; Pro não tem fallback
+  const modelos = modeloPrincipal === "gemini-2.5-pro"
+    ? ["gemini-2.5-pro"]
+    : modeloPrincipal === "gemini-2.5-flash"
+      ? ["gemini-2.5-flash", "gemini-2.5-flash-lite"]
+      : [modeloPrincipal];
+
+  const maxTentativas = 3;
+  const statusEl = document.getElementById("statusProcessar");
+
+  for (let m = 0; m < modelos.length; m++) {
+    const modelo = modelos[m];
+    for (let t = 1; t <= maxTentativas; t++) {
+      const tentativaLabel = (m === 0 && t === 1) ? "" : ` · ${modelo} tentativa ${t}/${maxTentativas}`;
+      showStatus("statusProcessar", `🔄 Enviando para ${modelo}...${tentativaLabel}`, "info");
+
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: "Você é um extrator preciso de dados de certidões de julgamento do Poder Judiciário brasileiro. Regras obrigatórias:\n1. O campo votoCompleto deve conter o dispositivo INTEGRAL como consta na certidão, incluindo o nome de cada recurso (apelação, remessa necessária, agravo, embargos etc.) e das partes quando mencionadas. Exemplo correto: \"negou provimento à apelação da Fazenda Nacional e deu provimento à remessa necessária\". Exemplo ERRADO: \"negou provimento\". NUNCA omita o nome do recurso.\n2. Retorne apenas o JSON array solicitado, sem texto adicional, sem markdown, sem backticks.\n3. Nunca invente dados. Se não encontrar, use string vazia." }]
+              },
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: {
+                temperature: 0,
+                response_mime_type: "application/json"
+              }
+            })
+          }
+        );
+
+        const sobrecarga = response.status === 503 || response.status === 429;
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          const errMsg = errData.error?.message || `HTTP ${response.status}`;
+          const eSobrecarga = sobrecarga || /high demand|overloaded|quota/i.test(errMsg);
+
+          if (eSobrecarga) {
+            if (t < maxTentativas) {
+              const espera = t * 8000;
+              showStatus("statusProcessar", `⏳ Servidor sobrecarregado (${modelo}). Aguardando ${espera/1000}s... (${t}/${maxTentativas})`, "warning");
+              await new Promise(r => setTimeout(r, espera));
+              continue;
+            } else if (m < modelos.length - 1) {
+              showStatus("statusProcessar", `⚠ ${modelo} indisponível. Tentando ${modelos[m+1]}...`, "warning");
+              break; // próximo modelo
+            }
+          }
+          throw new Error(`Gemini retornou ${response.status}: ${errMsg}`);
+        }
+
+        const data = await response.json();
+        const respostaTexto = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        if (!respostaTexto) throw new Error("Resposta vazia do Gemini.");
+
+        const modeloLabel = modelo !== modeloPrincipal ? ` (via ${modelo})` : "";
+        showStatus("statusProcessar", `✓ Gemini respondeu com sucesso!${modeloLabel}`, "success");
+        return respostaTexto;
+
+      } catch (err) {
+        const eSobrecarga = /high demand|overloaded|quota|503|429/i.test(err.message);
+        if (eSobrecarga && t < maxTentativas) {
+          const espera = t * 8000;
+          showStatus("statusProcessar", `⏳ Servidor sobrecarregado. Aguardando ${espera/1000}s... (${t}/${maxTentativas})`, "warning");
+          await new Promise(r => setTimeout(r, espera));
+        } else if (eSobrecarga && m < modelos.length - 1) {
+          showStatus("statusProcessar", `⚠ ${modelo} indisponível. Tentando ${modelos[m+1]}...`, "warning");
+          break;
+        } else {
+          throw err;
+        }
+      }
+    }
+  }
+
+  throw new Error("Todos os modelos Gemini indisponíveis. Tente novamente em alguns minutos ou use outro provedor.");
+}
+
+// ============================================================
+//  PROCESSAR CERTIDÕES (ETAPA 3)
+// ============================================================
+async function processarCertidoes() {
+  const { provedor, key } = getActiveApiKey();
+  if (!key) {
+    showStatus("statusProcessar", "Nenhuma chave de API configurada. Clique na ⚙ engrenagem no topo.", "error");
+    return;
+  }
+
+  // Montar texto das certidões
+  let textoFinal = "";
+  // Do PDFs
+  if (pdfTextos.length) {
+    textoFinal += pdfTextos.filter(p => !p.erro).map(p => p.texto).join("\n\n---\n\n");
+  }
+  // Do textarea
+  const textoManual = document.getElementById("certidoesTexto").value.trim();
+  if (textoManual) {
+    if (textoFinal) textoFinal += "\n\n---\n\n";
+    textoFinal += textoManual;
+  }
+
+  if (!textoFinal.trim()) {
+    showStatus("statusProcessar", "Nenhuma certidão fornecida. Importe PDFs ou cole o texto.", "error");
+    return;
+  }
+
+  textoCertidoes = textoFinal;
+
+  // Validar CNJs
+  const cnjsEncontrados = extrairCNJs(textoFinal);
+  const cnjControle = document.getElementById("cnjControle").value.trim();
+  if (cnjControle) {
+    const cnjsEsperados = extrairCNJs(cnjControle);
+    validarCNJs(cnjsEsperados, cnjsEncontrados);
+  }
+
+  // Chamar API
+  document.getElementById("btnProcessar").disabled = true;
+  document.getElementById("progressBar").classList.remove("hidden");
+  document.getElementById("progressFill").style.width = "30%";
+  showStatus("statusProcessar", `Enviando certidões para ${provedor.toUpperCase()} processar...`, "info");
+
+  try {
+    const prompt = buildExtractionPrompt(textoFinal);
+    document.getElementById("progressFill").style.width = "60%";
+
+    const textoResposta = await chamarIA(prompt);
+    document.getElementById("progressFill").style.width = "90%";
+
+    // Parse JSON
+    const jsonMatch = textoResposta.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("IA não retornou JSON válido. Resposta: " + textoResposta.substring(0, 200));
+
+    processosExtraidos = JSON.parse(jsonMatch[0]);
+    document.getElementById("progressFill").style.width = "100%";
+
+    // Validação pós-IA: comparar CNJs extraídos pela IA com lista de controle
+    const cnjControlePost = document.getElementById("cnjControle").value.trim();
+    if (cnjControlePost) {
+      const cnjsEsperados = extrairCNJs(cnjControlePost);
+      const cnjsExtraidos = processosExtraidos.map(p => p.processo).filter(Boolean);
+      validarCNJsPostIA(cnjsEsperados, cnjsExtraidos);
+    }
+
+    showStatus("statusProcessar", `✓ ${processosExtraidos.length} processo(s) extraído(s) com sucesso!`, "success");
+    exibirTabelaConferencia();
+    salvarEstadoCompleto();
+
+  } catch (err) {
+    showStatus("statusProcessar", `Erro: ${err.message}`, "error");
+    console.error(err);
+  } finally {
+    document.getElementById("btnProcessar").disabled = false;
+    setTimeout(() => document.getElementById("progressBar").classList.add("hidden"), 2000);
+  }
+}
+
+// ============================================================
+//  PROCESSAR RESPOSTA MANUAL DA IA EXTERNA
+// ============================================================
+function processarRespostaManual() {
+  const texto = document.getElementById("respostaManual").value.trim();
+  if (!texto) {
+    showStatus("statusProcessar", "Cole a resposta da IA antes de processar.", "error");
+    return;
+  }
+
+  try {
+    // Limpar possíveis backticks/markdown
+    const limpo = texto.replace(/```json\s*/gi, "").replace(/```\s*/gi, "").trim();
+    const jsonMatch = limpo.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) throw new Error("Nenhum array JSON encontrado na resposta.");
+
+    processosExtraidos = JSON.parse(jsonMatch[0]);
+
+    if (!Array.isArray(processosExtraidos) || processosExtraidos.length === 0) {
+      throw new Error("O JSON não contém processos válidos.");
+    }
+
+    // Validação pós-parse
+    const cnjControle = document.getElementById("cnjControle").value.trim();
+    if (cnjControle) {
+      const cnjsEsperados = extrairCNJs(cnjControle);
+      const cnjsExtraidos = processosExtraidos.map(p => p.processo).filter(Boolean);
+      validarCNJsPostIA(cnjsEsperados, cnjsExtraidos);
+    }
+
+    showStatus("statusProcessar", `✓ ${processosExtraidos.length} processo(s) importado(s) da resposta manual!`, "success");
+    exibirTabelaConferencia();
+    salvarEstadoCompleto();
+    showToast(`${processosExtraidos.length} processos importados!`, "success");
+
+  } catch (err) {
+    showStatus("statusProcessar", `Erro ao processar resposta: ${err.message}`, "error");
+    console.error(err);
+  }
+}
+
+// ============================================================
+//  COPIAR PROMPT PARA CONSULTA MANUAL
+// ============================================================
+function copiarPrompt() {
+  let textoFinal = "";
+  if (pdfTextos.length) {
+    textoFinal += pdfTextos.filter(p => !p.erro).map(p => p.texto).join("\n\n---\n\n");
+  }
+  const textoManual = document.getElementById("certidoesTexto").value.trim();
+  if (textoManual) {
+    if (textoFinal) textoFinal += "\n\n---\n\n";
+    textoFinal += textoManual;
+  }
+
+  if (!textoFinal.trim()) {
+    showStatus("statusProcessar", "Nenhuma certidão fornecida. Importe PDFs ou cole o texto antes de copiar o prompt.", "error");
+    return;
+  }
+
+  const prompt = buildExtractionPrompt(textoFinal);
+  navigator.clipboard.writeText(prompt).then(() => {
+    showToast("Prompt copiado! Cole em qualquer IA externa.", "success");
+  }).catch(() => {
+    // Fallback para navegadores sem clipboard API
+    const ta = document.createElement("textarea");
+    ta.value = prompt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    showToast("Prompt copiado!", "success");
+  });
+}
+
+// ============================================================
+//  PROMPT DE EXTRAÇÃO
+// ============================================================
+function buildExtractionPrompt(textoCertidoes) {
+  return `Você é um assistente jurídico. Analise as certidões de julgamento abaixo e extraia os dados de CADA processo em formato JSON.
+
+IMPORTANTE: Estes são julgamentos que foram suspensos nos termos do art. 942 do CPC (houve divergência 2×1).
+
+Para cada processo encontrado, extraia um objeto JSON com esta estrutura EXATA:
+
+{
+  "processo": "número CNJ",
+  "classe": "APELAÇÃO CÍVEL (198)",
+  "apelante": "nome completo",
+  "apelado": "nome completo",
+  "relator": {
+    "nome": "NOME COMPLETO SEM TÍTULO",
+    "titulo": "Desembargador Federal ou Juiz Federal",
+    "genero": "M ou F",
+    "votoCompleto": "voto COMPLETO do relator com o nome do recurso, SEMPRE NO PASSADO (ex: negou provimento à apelação, deu provimento à remessa necessária, deu parcial provimento à apelação da Fazenda Nacional, não conheceu da apelação, julgou prejudicada a remessa necessária). NUNCA resuma — transcreva o dispositivo completo como consta na certidão, incluindo todos os recursos julgados separados por vírgula se houver mais de um",
+    "foiVencido": true ou false,
+    "tipoVencido": "total ou parcial (se foiVencido=true)",
+    "observacaoVoto": "detalhes específicos quando houver (ex: aplicava a limitação dos efeitos da compensação)"
+  },
+  "divergente": {
+    "nome": "NOME COMPLETO SEM TÍTULO",
+    "titulo": "Desembargador Federal ou Juiz Federal",
+    "genero": "M ou F",
+    "votoCompleto": "voto COMPLETO do divergente com o nome do recurso, SEMPRE NO PASSADO (ex: deu provimento à apelação, negou provimento à remessa necessária, julgou prejudicada a apelação da impetrante e deu parcial provimento à remessa necessária). NUNCA resuma — transcreva o dispositivo completo como consta na certidão",
+    "tipoDivergencia": "divergente ou parcialmente divergente"
+  },
+  "terceiroVotante": {
+    "nome": "NOME COMPLETO SEM TÍTULO",
+    "titulo": "Desembargador Federal ou Juiz Federal",
+    "genero": "M ou F",
+    "acompanhou": "relator ou divergente"
+  },
+  "resultadoOriginal": "frase do resultado como está na certidão",
+  "dispositivoVencedor": "dispositivo COMPLETO que prevaleceu, com nome do recurso e partes se mencionados (ex: deu parcial provimento à apelação da Fazenda Nacional, negou provimento à remessa necessária e julgou prejudicada a apelação da impetrante)",
+  "quemVenceu": "relator ou divergente",
+  "dataSessaoOriginal": "data como consta"
+}
+
+REGRAS:
+- TODOS os dispositivos e votos devem estar no PRETÉRITO PERFEITO (passado): "negou provimento", "deu provimento", "deu parcial provimento", "não conheceu", "julgou prejudicado". NUNCA use infinitivo ("negar", "dar", "julgar").
+- O "divergente" é quem abriu a divergência. Se a certidão diz "nos termos do voto divergente de X", X é o divergente.
+- O "terceiroVotante" é o terceiro magistrado que acompanhou um dos lados.
+- "foiVencido" do relator = true quando a certidão diz "vencido o Relator" ou similar.
+- "tipoVencido" = "parcial" quando a certidão diz "vencido, em parte" e "total" quando diz apenas "vencido".
+- "tipoDivergencia" = "parcialmente divergente" quando a certidão menciona "parcialmente divergente", caso contrário "divergente".
+- Remova títulos como "Exmo.", "Sr.", "Des. Federal", "Juiz Federal" do campo "nome" — coloque apenas o nome da pessoa em MAIÚSCULAS.
+- No campo "titulo", informe "Juiz Federal" se a certidão mencionar "Juiz Federal" ou "convocado", caso contrário "Desembargador Federal".
+- Detecte o gênero pelo nome ou por pistas como "Juíza", "Desembargadora", "Sra.".
+
+Responda SOMENTE com o array JSON, sem texto adicional, sem markdown, sem backticks.
+
+CERTIDÕES:
+${textoCertidoes}`;
+}
+
+// ============================================================
+//  VALIDAÇÃO DE CNJs
+// ============================================================
+function validarCNJs(esperados, encontrados) {
+  const setEsp = new Set(esperados);
+  const setEnc = new Set(encontrados);
+  const container = document.getElementById("validationList");
+
+  let html = "";
+  for (const cnj of esperados) {
+    if (setEnc.has(cnj)) {
+      html += `<div class="val-ok">✅ ${cnj}</div>`;
+    } else {
+      html += `<div class="val-miss">❌ ${cnj} — certidão não encontrada</div>`;
+    }
+  }
+  for (const cnj of encontrados) {
+    if (!setEsp.has(cnj)) {
+      html += `<div class="val-extra">⚠️ ${cnj} — extra (não estava na lista)</div>`;
+    }
+  }
+  container.innerHTML = html;
+}
+
+function validarCNJsPostIA(esperados, extraidos) {
+  const setEsp = new Set(esperados);
+  const setExt = new Set(extraidos);
+  const container = document.getElementById("validationList");
+  let html = '<div style="margin-top:12px; padding-top:8px; border-top:1px dashed #ccc; font-weight:600; color:#1a3a5c; font-size:13px;">Validação pós-extração (IA):</div>';
+  let todosOk = true;
+  for (const cnj of esperados) {
+    if (setExt.has(cnj)) {
+      html += `<div class="val-ok">✅ ${cnj} — extraído pela IA</div>`;
+    } else {
+      html += `<div class="val-miss">❌ ${cnj} — NÃO extraído pela IA (verifique a certidão)</div>`;
+      todosOk = false;
+    }
+  }
+  for (const cnj of extraidos) {
+    if (!setEsp.has(cnj)) {
+      html += `<div class="val-extra">⚠️ ${cnj} — extraído mas não estava na lista de controle</div>`;
+    }
+  }
+  if (todosOk && esperados.length > 0) {
+    html += `<div class="val-ok" style="font-weight:700; margin-top:4px">✅ Todos os ${esperados.length} processos foram extraídos corretamente!</div>`;
+  }
+  container.innerHTML += html;
+}
+
+// ============================================================
+//  TABELA DE CONFERÊNCIA (ETAPA 3)
+// ============================================================
+function exibirTabelaConferencia() {
+  const container = document.getElementById("tabelaConferencia");
+  let html = `<table class="data-table">
+    <tr>
+      <th>#</th>
+      <th>Processo</th>
+      <th>Classe</th>
+      <th>Relator</th>
+      <th>Voto Relator</th>
+      <th>Divergente</th>
+      <th>Voto Diverg.</th>
+      <th>3º Votante</th>
+      <th>Acomp.</th>
+      <th>Venceu</th>
+    </tr>`;
+
+  processosExtraidos.forEach((p, i) => {
+    const vencidoLabel = p.relator.foiVencido
+      ? `<span style="color:#c62828">Divergência</span>`
+      : `<span style="color:#2e7d32">Relator</span>`;
+
+    html += `<tr>
+      <td>${i+1}</td>
+      <td><div class="editable-cell" contenteditable="true" data-field="processo" data-index="${i}">${p.processo || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="classe" data-index="${i}">${p.classe || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="relator.nome" data-index="${i}">${p.relator?.nome || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="relator.votoCompleto" data-index="${i}">${p.relator?.votoCompleto || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="divergente.nome" data-index="${i}">${p.divergente?.nome || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="divergente.votoCompleto" data-index="${i}">${p.divergente?.votoCompleto || ""}</div></td>
+      <td><div class="editable-cell" contenteditable="true" data-field="terceiroVotante.nome" data-index="${i}">${p.terceiroVotante?.nome || ""}</div></td>
+      <td>${(p.terceiroVotante?.acompanhou || "").replace(/^relator$/i, "Relator").replace(/^divergente$/i, "Divergência")}</td>
+      <td>${vencidoLabel}</td>
+    </tr>`;
+  });
+
+  html += `</table>`;
+  container.innerHTML = html;
+
+  // Editable cells
+  container.querySelectorAll(".editable-cell").forEach(cell => {
+    cell.addEventListener("blur", function() {
+      const idx = parseInt(this.dataset.index);
+      const field = this.dataset.field;
+      const value = this.textContent.trim();
+      setNestedField(processosExtraidos[idx], field, value);
+      salvarEstadoCompleto();
+    });
+  });
+}
+
+function setNestedField(obj, path, value) {
+  const keys = path.split(".");
+  let ref = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!ref[keys[i]]) ref[keys[i]] = {};
+    ref = ref[keys[i]];
+  }
+  ref[keys[keys.length - 1]] = value;
+}
+
+// ============================================================
+//  ETAPA 4: VOTAÇÃO
+// ============================================================
+function iniciarVotacao() {
+  document.getElementById("cardVotacao").scrollIntoView({ behavior: "smooth" });
+  renderVotacao();
+  salvarEstadoCompleto();
+}
+
+function renderVotacao() {
+  const container = document.getElementById("votacaoContainer");
+  const conv1Default = document.getElementById("convocadoPadrao1").value.trim();
+  const conv2Default = document.getElementById("convocadoPadrao2").value.trim();
+  const conv1JuizDefault = document.getElementById("convocadoPadraoJuiz1")?.checked || false;
+  const conv2JuizDefault = document.getElementById("convocadoPadraoJuiz2")?.checked || false;
+  let html = "";
+
+  processosExtraidos.forEach((p, i) => {
+    const relNome = p.relator?.nome || "Relator";
+    const divNome = p.divergente?.nome || "Divergente";
+    const relVoto = p.relator?.votoCompleto || "—";
+    const divVoto = p.divergente?.votoCompleto || "—";
+    const tipDiv = p.divergente?.tipoDivergencia || "divergente";
+
+    // Restore saved state
+    const savedConv1 = votos[i]?.conv1Nome || conv1Default;
+    const savedConv2 = votos[i]?.conv2Nome || conv2Default;
+    const savedConv1Voto = votos[i]?.conv1 || "";
+    const savedConv2Voto = votos[i]?.conv2 || "";
+    const savedMantidos = votos[i]?.mantidos !== undefined ? votos[i].mantidos : true;
+    const savedRetifQuem = votos[i]?.retifQuem || "";
+    const savedRetifPara = votos[i]?.retifPara || "relator";
+    const savedConv1Detalhe = votos[i]?.conv1Detalhe || "";
+    const savedConv2Detalhe = votos[i]?.conv2Detalhe || "";
+    const savedConv1Juiz = votos[i]?.conv1Juiz !== undefined ? votos[i].conv1Juiz : conv1JuizDefault;
+    const savedConv2Juiz = votos[i]?.conv2Juiz !== undefined ? votos[i].conv2Juiz : conv2JuizDefault;
+
+    function btnClass(convKey, tipo) {
+      const saved = convKey === "conv1" ? savedConv1Voto : savedConv2Voto;
+      return saved === tipo ? `vote-btn selected-${tipo}` : "vote-btn";
+    }
+
+    html += `
+    <div class="proc-card" id="procCard${i}">
+      <h3>${i+1}. ${p.processo || "—"} — ${p.classe || ""}</h3>
+      <div class="proc-info">
+        <strong>Apelante:</strong> ${p.apelante || "—"}<br>
+        <strong>Apelado:</strong> ${p.apelado || "—"}<br>
+        <strong>Relator:</strong> ${tituloCompleto(relNome, p.relator?.titulo)} ${relNome} → <em>${relVoto}</em> ${p.relator?.foiVencido ? '<span style="color:#c62828">(VENCIDO)</span>' : '<span style="color:#2e7d32">(PREVALECEU)</span>'}<br>
+        <strong>${toTitleCase(tipDiv)}:</strong> ${tituloCompleto(divNome, p.divergente?.titulo)} ${divNome} → <em>${divVoto}</em><br>
+        <strong>3º Votante:</strong> ${p.terceiroVotante?.nome || "—"} → acompanhou ${(p.terceiroVotante?.acompanhou || "—").replace(/^relator$/i, "Relator").replace(/^divergente$/i, "Divergência")}<br>
+        <strong>Data sessão original:</strong> ${p.dataSessaoOriginal || "—"}
+      </div>
+
+      <!-- Votos mantidos -->
+      <div class="toggle-row">
+        <input type="checkbox" id="mant${i}" ${savedMantidos ? "checked" : ""} onchange="toggleMantidos(${i})">
+        <label for="mant${i}">Todos os integrantes da turma <strong>mantiveram</strong> seus votos</label>
+      </div>
+      <div class="${savedMantidos ? "hidden" : ""}" id="retificacao${i}" style="margin:8px 0; padding:12px; background:#fff3e0; border-radius:8px;">
+        <label>Quem retificou o voto?</label>
+        <div style="margin-bottom:8px">
+          <select id="retifQuem${i}" style="width:auto; display:inline-block; margin-right:8px" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">
+            <option value="">Selecione...</option>
+            <option value="relator" ${savedRetifQuem==="relator"?"selected":""}>${relNome}</option>
+            <option value="divergente" ${savedRetifQuem==="divergente"?"selected":""}>${divNome}</option>
+            <option value="terceiro" ${savedRetifQuem==="terceiro"?"selected":""}>${p.terceiroVotante?.nome || "3º"}</option>
+          </select>
+        </div>
+        <label>Passou a acompanhar:</label>
+        <select id="retifPara${i}" style="width:auto" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">
+          <option value="relator" ${savedRetifPara==="relator"?"selected":""}>Relator</option>
+          <option value="divergente" ${savedRetifPara==="divergente"?"selected":""}>Divergência</option>
+        </select>
+      </div>
+
+      <!-- Convocado 1 -->
+      <div class="vote-group">
+        <label>Voto — Convocado 1:</label>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px">
+          <input type="text" id="conv1Input${i}" value="${savedConv1}" placeholder="Nome do convocado 1" style="font-size:12px; flex:1" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">
+          <label style="font-size:11px; white-space:nowrap; display:flex; align-items:center; gap:4px; margin-bottom:0; cursor:pointer">
+            <input type="checkbox" id="conv1Juiz${i}" ${savedConv1Juiz ? "checked" : ""} onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})" style="width:14px; height:14px">
+            Juiz(a) convocado(a)
+          </label>
+        </div>
+        <div class="vote-buttons">
+          <button class="${btnClass('conv1','relator')}" onclick="votar(${i},'conv1','relator',this)">Acompanhou Relator</button>
+          <button class="${btnClass('conv1','divergencia')}" onclick="votar(${i},'conv1','divergencia',this)">Acompanhou Divergência</button>
+          <button class="${btnClass('conv1','medio')}" onclick="votar(${i},'conv1','medio',this)">Voto Médio</button>
+          <button class="${btnClass('conv1','diferente')}" onclick="votar(${i},'conv1','diferente',this)">Voto Diferente</button>
+        </div>
+        <div class="vote-detail ${["medio","diferente"].includes(savedConv1Voto) ? "" : "hidden"}" id="conv1Detail${i}">
+          <textarea id="conv1Detalhe${i}" placeholder="Descreva o voto médio/diferente..." onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">${savedConv1Detalhe}</textarea>
+        </div>
+        <div style="margin-top:6px">
+          <label style="font-size:11px; display:flex; align-items:center; gap:4px; margin-bottom:0; cursor:pointer">
+            <input type="checkbox" id="conv1Ressalva${i}" ${votos[i]?.conv1Ressalva ? "checked" : ""} onchange="toggleRessalva(${i},'conv1')" style="width:14px; height:14px">
+            Ressalva
+          </label>
+          <div class="${votos[i]?.conv1Ressalva ? "" : "hidden"}" id="conv1RessalvaBox${i}" style="margin-top:4px">
+            <textarea id="conv1RessalvaTexto${i}" placeholder="Descreva a ressalva..." style="min-height:40px; font-size:12px" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">${votos[i]?.conv1RessalvaTexto || ""}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Convocado 2 -->
+      <div class="vote-group">
+        <label>Voto — Convocado 2:</label>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px">
+          <input type="text" id="conv2Input${i}" value="${savedConv2}" placeholder="Nome do convocado 2" style="font-size:12px; flex:1" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">
+          <label style="font-size:11px; white-space:nowrap; display:flex; align-items:center; gap:4px; margin-bottom:0; cursor:pointer">
+            <input type="checkbox" id="conv2Juiz${i}" ${savedConv2Juiz ? "checked" : ""} onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})" style="width:14px; height:14px">
+            Juiz(a) convocado(a)
+          </label>
+        </div>
+        <div class="vote-buttons">
+          <button class="${btnClass('conv2','relator')}" onclick="votar(${i},'conv2','relator',this)">Acompanhou Relator</button>
+          <button class="${btnClass('conv2','divergencia')}" onclick="votar(${i},'conv2','divergencia',this)">Acompanhou Divergência</button>
+          <button class="${btnClass('conv2','medio')}" onclick="votar(${i},'conv2','medio',this)">Voto Médio</button>
+          <button class="${btnClass('conv2','diferente')}" onclick="votar(${i},'conv2','diferente',this)">Voto Diferente</button>
+        </div>
+        <div class="vote-detail ${["medio","diferente"].includes(savedConv2Voto) ? "" : "hidden"}" id="conv2Detail${i}">
+          <textarea id="conv2Detalhe${i}" placeholder="Descreva o voto médio/diferente..." onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">${savedConv2Detalhe}</textarea>
+        </div>
+        <div style="margin-top:6px">
+          <label style="font-size:11px; display:flex; align-items:center; gap:4px; margin-bottom:0; cursor:pointer">
+            <input type="checkbox" id="conv2Ressalva${i}" ${votos[i]?.conv2Ressalva ? "checked" : ""} onchange="toggleRessalva(${i},'conv2')" style="width:14px; height:14px">
+            Ressalva
+          </label>
+          <div class="${votos[i]?.conv2Ressalva ? "" : "hidden"}" id="conv2RessalvaBox${i}" style="margin-top:4px">
+            <textarea id="conv2RessalvaTexto${i}" placeholder="Descreva a ressalva..." style="min-height:40px; font-size:12px" onchange="resetarProclamacao(${i}); salvarVotoEstado(${i})">${votos[i]?.conv2RessalvaTexto || ""}</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão gerar proclamação deste processo -->`;
+
+    const savedProclam = votos[i]?.proclamacaoTexto || "";
+    const btnLabel = savedProclam ? (savedProclam.includes("⚠️") ? "⚠️ Editar Proclamação" : "✅ Editar Proclamação") : "📜 Gerar Proclamação";
+    const btnBorderStyle = savedProclam ? (savedProclam.includes("⚠️") ? "border-color:#ef9a9a" : "border-color:#a5d6a7") : "";
+    const escapedProclam = savedProclam.replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+    html += `
+      <button class="btn btn-secondary btn-sm btn-proclam" style="margin-top:10px;${btnBorderStyle}" onclick="gerarProclamacaoIndividual(${i})">${btnLabel}</button>
+      <div id="proclamacao${i}" style="display:none"><input type="hidden" id="proclamEdit${i}" value="${escapedProclam}"></div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+//  BUSCA DE PROCESSO
+// ============================================================
+function buscarProcesso(termo) {
+  const clearBtn = document.getElementById("buscaClear");
+  const counter = document.getElementById("buscaCounter");
+  clearBtn.style.display = termo ? "block" : "none";
+
+  // Remove highlight anterior
+  document.querySelectorAll(".proc-card.highlight").forEach(c => c.classList.remove("highlight"));
+
+  if (!termo.trim()) {
+    // Mostrar todos
+    document.querySelectorAll("#votacaoContainer .proc-card").forEach(c => c.style.display = "");
+    counter.textContent = "";
+    return;
+  }
+
+  const termoLimpo = termo.replace(/\D/g, ""); // só dígitos para comparação flexível
+  let found = 0;
+  let firstMatch = null;
+
+  processosExtraidos.forEach((p, i) => {
+    const card = document.getElementById(`procCard${i}`);
+    if (!card) return;
+    const cnj = (p.processo || "").replace(/\D/g, "");
+    const match = cnj.startsWith(termoLimpo) || (p.processo || "").startsWith(termo.trim());
+    card.style.display = match ? "" : "none";
+    if (match) {
+      found++;
+      if (!firstMatch) firstMatch = card;
+    }
+  });
+
+  counter.textContent = found > 0 ? `${found} processo(s) encontrado(s)` : "Nenhum processo encontrado";
+
+  // Scroll para o primeiro resultado e destacar
+  if (firstMatch) {
+    firstMatch.classList.add("highlight");
+    firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => firstMatch.classList.remove("highlight"), 3000);
+  }
+}
+
+function limparBusca() {
+  const input = document.getElementById("buscaProcesso");
+  input.value = "";
+  buscarProcesso("");
+  input.focus();
+}
+
+// Estado de votos
+const votos = {};
+
+function toggleRessalva(procIdx, convocado) {
+  const checked = document.getElementById(`${convocado}Ressalva${procIdx}`).checked;
+  const box = document.getElementById(`${convocado}RessalvaBox${procIdx}`);
+  if (checked) box.classList.remove("hidden");
+  else box.classList.add("hidden");
+  resetarProclamacao(procIdx);
+  salvarVotoEstado(procIdx);
+}
+
+function salvarVotoEstado(procIdx) {
+  if (!votos[procIdx]) votos[procIdx] = {};
+  const v = votos[procIdx];
+  const conv1El = document.getElementById(`conv1Input${procIdx}`);
+  const conv2El = document.getElementById(`conv2Input${procIdx}`);
+  if (conv1El) v.conv1Nome = conv1El.value.trim();
+  if (conv2El) v.conv2Nome = conv2El.value.trim();
+  const mantEl = document.getElementById(`mant${procIdx}`);
+  if (mantEl) v.mantidos = mantEl.checked;
+  const retifQ = document.getElementById(`retifQuem${procIdx}`);
+  const retifP = document.getElementById(`retifPara${procIdx}`);
+  if (retifQ) v.retifQuem = retifQ.value;
+  if (retifP) v.retifPara = retifP.value;
+  const d1 = document.getElementById(`conv1Detalhe${procIdx}`);
+  const d2 = document.getElementById(`conv2Detalhe${procIdx}`);
+  if (d1) v.conv1Detalhe = d1.value;
+  if (d2) v.conv2Detalhe = d2.value;
+  const j1 = document.getElementById(`conv1Juiz${procIdx}`);
+  const j2 = document.getElementById(`conv2Juiz${procIdx}`);
+  if (j1) v.conv1Juiz = j1.checked;
+  if (j2) v.conv2Juiz = j2.checked;
+  // Ressalva (independente do voto)
+  const r1 = document.getElementById(`conv1Ressalva${procIdx}`);
+  const r2 = document.getElementById(`conv2Ressalva${procIdx}`);
+  if (r1) v.conv1Ressalva = r1.checked;
+  if (r2) v.conv2Ressalva = r2.checked;
+  const rt1 = document.getElementById(`conv1RessalvaTexto${procIdx}`);
+  const rt2 = document.getElementById(`conv2RessalvaTexto${procIdx}`);
+  if (rt1) v.conv1RessalvaTexto = rt1.value;
+  if (rt2) v.conv2RessalvaTexto = rt2.value;
+  salvarEstadoCompleto();
+}
+
+function votar(procIdx, convocado, tipo, btnEl) {
+  if (!votos[procIdx]) votos[procIdx] = {};
+  votos[procIdx][convocado] = tipo;
+
+  // Visual
+  const parent = btnEl.closest(".vote-buttons");
+  parent.querySelectorAll(".vote-btn").forEach(b => b.className = "vote-btn");
+  btnEl.classList.add(`selected-${tipo}`);
+
+  // Show detail field for special votes
+  const detailEl = document.getElementById(`${convocado}Detail${procIdx}`);
+  if (["medio","diferente"].includes(tipo)) {
+    detailEl.classList.remove("hidden");
+  } else {
+    detailEl.classList.add("hidden");
+  }
+
+  resetarProclamacao(procIdx);
+  salvarVotoEstado(procIdx);
+}
+
+function toggleMantidos(idx) {
+  const checked = document.getElementById(`mant${idx}`).checked;
+  const retifDiv = document.getElementById(`retificacao${idx}`);
+  if (checked) retifDiv.classList.add("hidden");
+  else retifDiv.classList.remove("hidden");
+  resetarProclamacao(idx);
+  salvarVotoEstado(idx);
+}
+
+function resetarProclamacao(procIdx) {
+  // Limpar texto salvo
+  if (votos[procIdx]) {
+    delete votos[procIdx].proclamacaoTexto;
+  }
+  const hidden = document.getElementById(`proclamEdit${procIdx}`);
+  if (hidden) hidden.value = "";
+
+  // Resetar botão
+  const btn = document.querySelector(`#procCard${procIdx} .btn-proclam`);
+  if (btn) {
+    btn.textContent = "📜 Gerar Proclamação";
+    btn.style.borderColor = "";
+  }
+}
+
+// ============================================================
+//  GERAÇÃO DE PROCLAMAÇÃO POR PROCESSO
+// ============================================================
+let proclamModalIdx = -1; // índice do processo aberto no modal
+
+function gerarProclamacaoIndividual(i) {
+  const p = processosExtraidos[i];
+  const votoProc = votos[i] || {};
+  const conv1Voto = votoProc.conv1;
+  const conv2Voto = votoProc.conv2;
+
+  if (!conv1Voto || !conv2Voto) {
+    abrirProclamModal(i, p, "⚠️ Votos dos convocados não informados.", true);
+    return;
+  }
+
+  const conv1Nome = document.getElementById(`conv1Input${i}`).value.trim() || "";
+  const conv2Nome = document.getElementById(`conv2Input${i}`).value.trim() || "";
+
+  if (!conv1Nome || !conv2Nome) {
+    abrirProclamModal(i, p, "⚠️ Nomes dos convocados não informados.", true);
+    return;
+  }
+
+  const conv1Juiz = document.getElementById(`conv1Juiz${i}`)?.checked || false;
+  const conv2Juiz = document.getElementById(`conv2Juiz${i}`)?.checked || false;
+  const conv1Titulo = conv1Juiz ? "Juiz Federal" : "Desembargador Federal";
+  const conv2Titulo = conv2Juiz ? "Juiz Federal" : "Desembargador Federal";
+
+  // Voto médio / diferente → inconclusivo
+  if (["medio","diferente"].includes(conv1Voto) || ["medio","diferente"].includes(conv2Voto)) {
+    const detalhe1 = document.getElementById(`conv1Detalhe${i}`)?.value || "";
+    const detalhe2 = document.getElementById(`conv2Detalhe${i}`)?.value || "";
+    const texto = `⚠️ PROCLAMAÇÃO INCONCLUSIVA — há voto médio ou totalmente diferente. Revisar manualmente.\n\nConvocado 1 (${conv1Nome}): ${conv1Voto} ${detalhe1 ? "— " + detalhe1 : ""}\nConvocado 2 (${conv2Nome}): ${conv2Voto} ${detalhe2 ? "— " + detalhe2 : ""}`;
+    abrirProclamModal(i, p, texto, true);
+    return;
+  }
+
+  const mantidos = document.getElementById(`mant${i}`).checked;
+  const retifQuem = document.getElementById(`retifQuem${i}`)?.value || "";
+  const retifPara = document.getElementById(`retifPara${i}`)?.value || "";
+
+  // Ressalva
+  const conv1Ressalva = document.getElementById(`conv1Ressalva${i}`)?.checked || false;
+  const conv2Ressalva = document.getElementById(`conv2Ressalva${i}`)?.checked || false;
+  const conv1RessalvaTexto = document.getElementById(`conv1RessalvaTexto${i}`)?.value || "";
+  const conv2RessalvaTexto = document.getElementById(`conv2RessalvaTexto${i}`)?.value || "";
+
+  const texto = buildProclamacao(p, conv1Nome, conv2Nome, conv1Voto, conv2Voto, mantidos, retifQuem, retifPara, conv1Titulo, conv2Titulo, {
+    conv1Ressalva, conv2Ressalva, conv1RessalvaTexto, conv2RessalvaTexto
+  });
+  const inconclusivo = texto.includes("⚠️");
+  abrirProclamModal(i, p, texto, inconclusivo);
+}
+
+function abrirProclamModal(i, p, texto, inconclusivo) {
+  proclamModalIdx = i;
+
+  // Se já tem texto salvo no campo oculto, usar esse (pode ter sido editado antes)
+  const existente = document.getElementById(`proclamEdit${i}`)?.value;
+  const textoFinal = existente && existente.trim() && !existente.includes("Aguardando") ? existente : texto;
+
+  document.getElementById("proclamModalTitle").textContent = `${i+1}. ${p.processo || "—"} — ${p.classe || ""}`;
+  document.getElementById("proclamModalSummary").innerHTML = `<strong>Apelante:</strong> ${p.apelante || "—"} &nbsp;|&nbsp; <strong>Apelado:</strong> ${p.apelado || "—"}`;
+  document.getElementById("proclamModalText").value = textoFinal;
+  document.getElementById("proclamModalText").style.borderColor = inconclusivo ? "#ef9a9a" : "#d0d5dd";
+  document.getElementById("proclamModalStatus").textContent = "";
+  document.getElementById("proclamOverlay").classList.add("open");
+
+  // Salvar no campo oculto para o Word
+  let hidden = document.getElementById(`proclamEdit${i}`);
+  if (!hidden) {
+    const container = document.getElementById(`proclamacao${i}`);
+    if (container) container.innerHTML = `<input type="hidden" id="proclamEdit${i}" value="">`;
+    hidden = document.getElementById(`proclamEdit${i}`);
+  }
+  if (hidden) hidden.value = textoFinal;
+}
+
+function salvarProclamacao() {
+  const i = proclamModalIdx;
+  if (i < 0) return;
+  const texto = document.getElementById("proclamModalText").value;
+
+  // Salvar no campo oculto
+  let hidden = document.getElementById(`proclamEdit${i}`);
+  if (!hidden) {
+    const container = document.getElementById(`proclamacao${i}`);
+    if (container) container.innerHTML = `<input type="hidden" id="proclamEdit${i}" value="">`;
+    hidden = document.getElementById(`proclamEdit${i}`);
+  }
+  if (hidden) hidden.value = texto;
+
+  // Salvar no estado de votos para persistência
+  if (!votos[i]) votos[i] = {};
+  votos[i].proclamacaoTexto = texto;
+
+  // Indicador visual no card
+  const btn = document.querySelector(`#procCard${i} .btn-proclam`);
+  if (btn) {
+    btn.textContent = texto.includes("⚠️") ? "⚠️ Editar Proclamação" : "✅ Editar Proclamação";
+    btn.style.borderColor = texto.includes("⚠️") ? "#ef9a9a" : "#a5d6a7";
+  }
+
+  salvarEstadoCompleto();
+  fecharProclamacao();
+  showToast("Proclamação salva.", "success");
+}
+
+function fecharProclamacao() {
+  document.getElementById("proclamOverlay").classList.remove("open");
+  proclamModalIdx = -1;
+}
+
+function copiarProclamacao() {
+  const texto = document.getElementById("proclamModalText").value;
+  navigator.clipboard.writeText(texto).then(() => {
+    document.getElementById("proclamModalStatus").textContent = "✓ Copiado!";
+    setTimeout(() => { document.getElementById("proclamModalStatus").textContent = ""; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement("textarea");
+    ta.value = texto; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
+    document.getElementById("proclamModalStatus").textContent = "✓ Copiado!";
+  });
+}
+
+function buildProclamacao(p, conv1Nome, conv2Nome, conv1Voto, conv2Voto, mantidos, retifQuem, retifPara, conv1Titulo, conv2Titulo, ressalvas) {
+  const r = ressalvas || {};
+
+  // Helper: sufixo de ressalva para um convocado
+  function ressalvaSufixo(convKey) {
+    const tem = r[`${convKey}Ressalva`];
+    const texto = r[`${convKey}RessalvaTexto`] || "";
+    if (!tem || !texto) return "";
+    return `, com ressalva quanto ${texto}`;
+  }
+  const relNome = p.relator?.nome || "RELATOR";
+  const divNome = p.divergente?.nome || "DIVERGENTE";
+  const relTitulo = p.relator?.titulo || "";
+  const divTitulo = p.divergente?.titulo || "";
+  const tipDiv = p.divergente?.tipoDivergencia || "divergente";
+  const relVoto = p.relator?.votoCompleto || "";
+  const divVoto = p.divergente?.votoCompleto || "";
+  const obsVoto = p.relator?.observacaoVoto || "";
+  const foiVencidoParcial = (p.relator?.tipoVencido === "parcial");
+
+  // Gênero do relator para concordância
+  const relGenero = p.relator?.genero || detectarGenero(relNome);
+  const divGenero = p.divergente?.genero || detectarGenero(divNome);
+
+  // Strings com concordância de gênero
+  const relatorLabel = relGenero === "F" ? "a Relatora" : "o Relator";
+
+  // Calcular placar
+  const relatorVenceuOriginal = (p.quemVenceu === "relator");
+
+  let votosRelator, votosDivergencia;
+  if (relatorVenceuOriginal) {
+    votosRelator = 2; votosDivergencia = 1;
+  } else {
+    votosRelator = 1; votosDivergencia = 2;
+  }
+
+  // Votos mantidos ou retificados
+  if (!mantidos && retifQuem && retifPara) {
+    if (retifPara === "relator") {
+      votosDivergencia--; votosRelator++;
+    } else {
+      votosRelator--; votosDivergencia++;
+    }
+  }
+
+  // Adicionar votos dos convocados
+  if (conv1Voto === "relator") votosRelator++;
+  else if (conv1Voto === "divergencia") votosDivergencia++;
+  if (conv2Voto === "relator") votosRelator++;
+  else if (conv2Voto === "divergencia") votosDivergencia++;
+
+  const totalRelator = votosRelator;
+  const totalDivergencia = votosDivergencia;
+
+  // Unanimidade?
+  const unanime = (totalRelator === 5 || totalDivergencia === 5) ||
+                   (totalRelator === 0 || totalDivergencia === 0);
+
+  const quorum = unanime ? "à unanimidade" : "por maioria";
+  const relatorVenceFinal = totalRelator > totalDivergencia;
+
+  // Helper: converter verbo para pretérito imperfeito plural (quando há múltiplos vencidos)
+  function toImperfeito(voto) {
+    if (!voto) return voto;
+    return voto
+      .replace(/\bnegou\b/g, "negavam").replace(/\bdeu\b/g, "davam")
+      .replace(/\bjulgou\b/g, "julgavam").replace(/\bnão conheceu\b/g, "não conheciam")
+      .replace(/\bextinguiu\b/g, "extinguiam").replace(/\bconverteu\b/g, "convertiam")
+      .replace(/\brejeitou\b/g, "rejeitavam").replace(/\bacolheu\b/g, "acolhiam");
+  }
+
+  // Helper: montar frase de vencido(s)
+  // vencidos = [{nome, titulo, voto}], parcial = true/false
+  function fraseVencidos(vencidos, parcial) {
+    if (vencidos.length === 0) return "";
+    const plural = vencidos.length > 1;
+    const primeiroGenero = vencidos[0].genero || detectarGenero(vencidos[0].nome);
+    const prefixo = parcial
+      ? (plural ? "Vencidos, em parte," : (primeiroGenero === "F" ? "Vencida, em parte," : "Vencido, em parte,"))
+      : (plural ? "Vencidos" : (primeiroGenero === "F" ? "Vencida" : "Vencido"));
+
+    const nomes = vencidos.map((v, idx) => {
+      const art = (v.genero || detectarGenero(v.nome)) === "F" ? "a" : "o";
+      return `${art} ${tituloCompleto(v.nome, v.titulo)} ${v.nome}`;
+    }).join(" e ");
+
+    // Voto dos vencidos
+    const voto = vencidos[0].voto || "";
+    let fraseVoto = "";
+    if (voto) {
+      if (plural) {
+        fraseVoto = ` que ${toImperfeito(voto)}`;
+      } else {
+        fraseVoto = ` que ${voto}`;
+      }
+    }
+
+    return `${prefixo} ${nomes}${fraseVoto}.`;
+  }
+
+  // ============================================================
+  //  CENÁRIO: UNANIMIDADE POR RETIFICAÇÃO
+  // ============================================================
+  if (!mantidos && unanime) {
+    const quemRetificou = retifQuem === "relator" ? relNome : (retifQuem === "divergente" ? divNome : (p.terceiroVotante?.nome || ""));
+    const retifTitulo = retifQuem === "relator" ? relTitulo : (retifQuem === "divergente" ? divTitulo : (p.terceiroVotante?.titulo || ""));
+    const dispositivoFinal = relatorVenceFinal ? relVoto : divVoto;
+    const acompQuem = relatorVenceFinal ? relatorLabel : `o voto ${tipDiv} ${doDA(divNome)} ${tituloCompleto(divNome, divTitulo)} ${divNome}`;
+
+    return `Prosseguindo no julgamento, nos termos do artigo 942 do CPC, retificou seu voto ${doaDA(quemRetificou)} ${tituloCompleto(quemRetificou, retifTitulo)} ${quemRetificou} para acompanhar ${acompQuem}, encerrando-se qualquer divergência. Em conclusão, a Turma ${quorum}, ${dispositivoFinal}, nos termos do voto d${relGenero === "F" ? "a" : "o"} Relator${relGenero === "F" ? "a" : ""}.`;
+  }
+
+  // ============================================================
+  //  CENÁRIO A: AMBOS CONVOCADOS ACOMPANHAM DIVERGÊNCIA (4×1)
+  // ============================================================
+  if (conv1Voto === "divergencia" && conv2Voto === "divergencia") {
+    const fraseMantidos = mantidos ? "mantidos os votos proferidos pelos integrantes da turma, " : "";
+    const obsStr = obsVoto ? obsVoto : relVoto;
+    const r1 = ressalvaSufixo("conv1");
+    const r2 = ressalvaSufixo("conv2");
+
+    const divergenciaMinima = foiVencidoParcial;
+    const lavraStr = divergenciaMinima
+      ? `Lavrará o acórdão ${relatorLabel}, em razão de a divergência ter sido mínima.`
+      : `Lavrará o acórdão ${doaDA(divNome)} ${tituloCompleto(divNome, divTitulo)} ${divNome}.`;
+
+    const vencidoStr = fraseVencidos([{nome: relNome, titulo: relTitulo, genero: relGenero, voto: obsStr}], foiVencidoParcial);
+
+    // Se há ressalva, separar os convocados individualmente
+    let fraseVotos;
+    if (r1 || r2) {
+      fraseVotos = `foram colhidos os votos ${doDA(conv1Nome)} ${tituloCompleto(conv1Nome, conv1Titulo)} ${conv1Nome} que acompanhou o voto ${tipDiv}${r1} e ${doDA(conv2Nome)} ${tituloCompleto(conv2Nome, conv2Titulo)} ${conv2Nome} que acompanhou o voto ${tipDiv}${r2}`;
+    } else {
+      fraseVotos = `foram colhidos os votos ${doDA(conv1Nome)} ${tituloCompleto(conv1Nome, conv1Titulo)} ${conv1Nome} e ${doDA(conv2Nome)} ${tituloCompleto(conv2Nome, conv2Titulo)} ${conv2Nome} que acompanharam o voto ${tipDiv} ${doDA(divNome)} ${tituloCompleto(divNome, divTitulo)} ${divNome}`;
+    }
+
+    return `Prosseguindo no julgamento, nos termos do artigo 942 do CPC, ${fraseMantidos}${fraseVotos}. Em conclusão, a Turma ampliada, ${quorum}, ${divVoto}, nos termos do voto ${tipDiv}, ${vencidoStr} ${lavraStr}`;
+  }
+
+  // ============================================================
+  //  CENÁRIO B: AMBOS CONVOCADOS ACOMPANHAM RELATOR (4×1)
+  // ============================================================
+  if (conv1Voto === "relator" && conv2Voto === "relator") {
+    const fraseMantidos = mantidos ? "mantidos os votos proferidos pelos integrantes da turma, " : "";
+    const r1 = ressalvaSufixo("conv1");
+    const r2 = ressalvaSufixo("conv2");
+
+    const vencidoStr = fraseVencidos([{nome: divNome, titulo: divTitulo, genero: divGenero, voto: divVoto}], foiVencidoParcial);
+
+    let fraseVotos;
+    if (r1 || r2) {
+      fraseVotos = `foram colhidos os votos ${doDA(conv1Nome)} ${tituloCompleto(conv1Nome, conv1Titulo)} ${conv1Nome} que acompanhou ${relatorLabel}${r1} e ${doDA(conv2Nome)} ${tituloCompleto(conv2Nome, conv2Titulo)} ${conv2Nome} que acompanhou ${relatorLabel}${r2}`;
+    } else {
+      fraseVotos = `foram colhidos os votos ${doDA(conv1Nome)} ${tituloCompleto(conv1Nome, conv1Titulo)} ${conv1Nome} e ${doDA(conv2Nome)} ${tituloCompleto(conv2Nome, conv2Titulo)} ${conv2Nome} que acompanharam ${relatorLabel}`;
+    }
+
+    return `Prosseguindo no julgamento, nos termos do artigo 942 do CPC, ${fraseMantidos}${fraseVotos}. Em conclusão, a Turma ampliada, ${quorum}, ${relVoto}, nos termos do voto d${relGenero === "F" ? "a" : "o"} Relator${relGenero === "F" ? "a" : ""}. ${vencidoStr}`;
+  }
+
+  // ============================================================
+  //  CENÁRIO C: UM ACOMPANHA CADA (3×2)
+  // ============================================================
+  if ((conv1Voto === "relator" && conv2Voto === "divergencia") || (conv1Voto === "divergencia" && conv2Voto === "relator")) {
+    const convRelator = conv1Voto === "relator" ? conv1Nome : conv2Nome;
+    const convDivergencia = conv1Voto === "divergencia" ? conv1Nome : conv2Nome;
+    const convRelatorTitulo = conv1Voto === "relator" ? conv1Titulo : conv2Titulo;
+    const convDivergenciaTitulo = conv1Voto === "divergencia" ? conv1Titulo : conv2Titulo;
+    const convRelatorRessalva = conv1Voto === "relator" ? ressalvaSufixo("conv1") : ressalvaSufixo("conv2");
+    const convDivergenciaRessalva = conv1Voto === "divergencia" ? ressalvaSufixo("conv1") : ressalvaSufixo("conv2");
+    const fraseMantidos = mantidos ? "mantidos os votos proferidos pelos integrantes da turma, " : "";
+
+    if (relatorVenceFinal) {
+      // Relator vence 3×2 — vencidos: divergente + convocado que acompanhou divergência
+      const vencidoStr = fraseVencidos([
+        {nome: divNome, titulo: divTitulo, genero: divGenero, voto: divVoto},
+        {nome: convDivergencia, titulo: convDivergenciaTitulo, genero: detectarGenero(convDivergencia), voto: divVoto}
+      ], foiVencidoParcial);
+
+      return `Prosseguindo no julgamento, nos termos do artigo 942 do CPC, ${fraseMantidos}foram colhidos os votos ${doDA(convRelator)} ${tituloCompleto(convRelator, convRelatorTitulo)} ${convRelator} que acompanhou ${relatorLabel}${convRelatorRessalva} e ${doDA(convDivergencia)} ${tituloCompleto(convDivergencia, convDivergenciaTitulo)} ${convDivergencia} que acompanhou o voto ${tipDiv}${convDivergenciaRessalva}. Em conclusão, a Turma ampliada, ${quorum}, ${relVoto}, nos termos do voto d${relGenero === "F" ? "a" : "o"} Relator${relGenero === "F" ? "a" : ""}. ${vencidoStr}`;
+    } else {
+      // Divergência vence 3×2 — vencidos: relator + convocado que acompanhou relator
+      const obsStr = obsVoto ? obsVoto : relVoto;
+      const divergenciaMinima = foiVencidoParcial;
+      const lavraStr = divergenciaMinima
+        ? `Lavrará o acórdão ${relatorLabel}, em razão de a divergência ter sido mínima.`
+        : `Lavrará o acórdão ${doaDA(divNome)} ${tituloCompleto(divNome, divTitulo)} ${divNome}.`;
+
+      const vencidoStr = fraseVencidos([
+        {nome: relNome, titulo: relTitulo, genero: relGenero, voto: obsStr},
+        {nome: convRelator, titulo: convRelatorTitulo, genero: detectarGenero(convRelator), voto: obsStr}
+      ], foiVencidoParcial);
+
+      return `Prosseguindo no julgamento, nos termos do artigo 942 do CPC, ${fraseMantidos}foram colhidos os votos ${doDA(convDivergencia)} ${tituloCompleto(convDivergencia, convDivergenciaTitulo)} ${convDivergencia} que acompanhou o voto ${tipDiv} ${doDA(divNome)} ${tituloCompleto(divNome, divTitulo)} ${divNome}${convDivergenciaRessalva} e ${doDA(convRelator)} ${tituloCompleto(convRelator, convRelatorTitulo)} ${convRelator} que acompanhou ${relatorLabel}${convRelatorRessalva}. Em conclusão, a Turma ampliada, ${quorum}, ${divVoto}, nos termos do voto ${tipDiv}, ${vencidoStr} ${lavraStr}`;
+    }
+  }
+
+  // Fallback
+  return `⚠️ Combinação de votos não reconhecida para o processo ${p.processo}. Revisar manualmente.`;
+}
+
+// ============================================================
+//  GERAÇÃO DO WORD
+// ============================================================
+function gerarWord() {
+  // Coletar proclamações dos textareas inline na Etapa 4
+  const proclamacoes = [];
+  processosExtraidos.forEach((p, i) => {
+    const textarea = document.getElementById(`proclamEdit${i}`);
+    const texto = textarea ? textarea.value.trim() : "";
+    const inconclusivo = !texto || texto.includes("⚠️") || texto.includes("INCONCLUSIV");
+    proclamacoes.push({ processo: p, texto: texto || "Proclamação não gerada.", inconclusivo });
+  });
+
+  if (proclamacoes.length === 0) {
+    showStatus("statusWord", "Nenhuma proclamação encontrada. Gere as proclamações primeiro.", "error");
+    return;
+  }
+
+  const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = docx;
+  const bk = { font: "Arial", size: 24, color: "000000" };
+  const basePara = { spacing: { before: 60, after: 0, line: 360 }, indent: { left: -20, right: -20 } };
+
+  const turma = document.getElementById("turma").value.trim() || "TURMA";
+  const dataSessao = document.getElementById("dataSessao942").value.trim() || "__/__/____";
+
+  const children = [];
+
+  // Cabeçalho
+  children.push(new Paragraph({
+    ...basePara, alignment: AlignmentType.CENTER,
+    children: [new TextRun({ ...bk, text: `ÓRGÃO JULGADOR: ${turma.toUpperCase()}`, bold: true })]
+  }));
+  children.push(new Paragraph({
+    ...basePara, alignment: AlignmentType.CENTER,
+    children: [
+      new TextRun({ ...bk, text: "SESSÃO 942 — " }),
+      new TextRun({ ...bk, text: `DIA ${dataSessao}`, bold: true })
+    ]
+  }));
+  children.push(new Paragraph({ ...basePara, children: [] }));
+
+  // Tabela resumo
+  children.push(new Paragraph({
+    ...basePara,
+    children: [new TextRun({ ...bk, text: "RESUMO DOS JULGAMENTOS", bold: true, highlight: "yellow" })]
+  }));
+
+  proclamacoes.forEach((item, i) => {
+    const p = item.processo;
+    const editedText = document.getElementById(`proclamEdit${i}`)?.value || item.texto;
+    const inconclusivo = item.inconclusivo || editedText.includes("INCONCLUSIV");
+    const statusColor = inconclusivo ? "FF0000" : "2E7D32";
+    const statusText = inconclusivo ? "INCONCLUSIVO" : "OK";
+
+    children.push(new Paragraph({
+      ...basePara,
+      children: [
+        new TextRun({ ...bk, text: `${i+1}. ${p.processo || "—"} — `, bold: true }),
+        new TextRun({ font: "Arial", size: 24, color: statusColor, text: statusText, bold: true })
+      ]
+    }));
+  });
+
+  children.push(new Paragraph({ ...basePara, children: [] }));
+  children.push(new Paragraph({
+    ...basePara,
+    children: [new TextRun({ ...bk, text: "___________________________________________________________________" })]
+  }));
+  children.push(new Paragraph({ ...basePara, children: [] }));
+
+  // Proclamações
+  children.push(new Paragraph({
+    ...basePara,
+    children: [new TextRun({ ...bk, text: "TEXTOS DAS PROCLAMAÇÕES", bold: true, highlight: "yellow" })]
+  }));
+  children.push(new Paragraph({ ...basePara, children: [] }));
+
+  proclamacoes.forEach((item, i) => {
+    const p = item.processo;
+    const editedText = document.getElementById(`proclamEdit${i}`)?.value || item.texto;
+
+    // Header do processo
+    children.push(new Paragraph({
+      ...basePara,
+      children: [new TextRun({ ...bk, text: `PROCESSO Nº ${p.processo || "—"}`, bold: true })]
+    }));
+    children.push(new Paragraph({
+      ...basePara,
+      children: [new TextRun({ ...bk, text: `${p.classe || ""}` })]
+    }));
+    children.push(new Paragraph({
+      ...basePara,
+      children: [
+        new TextRun({ ...bk, text: "APELANTE: ", bold: true }),
+        new TextRun({ ...bk, text: p.apelante || "—" })
+      ]
+    }));
+    children.push(new Paragraph({
+      ...basePara,
+      children: [
+        new TextRun({ ...bk, text: "APELADO: ", bold: true }),
+        new TextRun({ ...bk, text: p.apelado || "—" })
+      ]
+    }));
+
+    // Relator
+    const relNome = p.relator?.nome || "";
+    children.push(new Paragraph({
+      ...basePara,
+      children: [
+        new TextRun({ ...bk, text: "RELATOR: ", bold: true }),
+        new TextRun({ ...bk, text: `${tituloCompleto(relNome, p.relator?.titulo)} ${relNome}` })
+      ]
+    }));
+
+    children.push(new Paragraph({ ...basePara, children: [] }));
+
+    // Texto da proclamação
+    const inconclusivo = item.inconclusivo || editedText.includes("INCONCLUSIV");
+    children.push(new Paragraph({
+      ...basePara, alignment: AlignmentType.JUSTIFIED,
+      children: [new TextRun({
+        font: "Arial", size: 24,
+        color: inconclusivo ? "FF0000" : "000000",
+        text: editedText,
+        bold: inconclusivo
+      })]
+    }));
+
+    children.push(new Paragraph({ ...basePara, children: [] }));
+    children.push(new Paragraph({
+      ...basePara,
+      children: [new TextRun({ ...bk, text: "___________________________________________________________________" })]
+    }));
+    children.push(new Paragraph({ ...basePara, children: [] }));
+  });
+
+  // Gerar arquivo
+  const doc = new Document({
+    sections: [{
+      properties: {
+        page: {
+          size: { width: 11906, height: 16838 },
+          margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
+        }
+      },
+      children
+    }]
+  });
+
+  Packer.toBlob(doc).then(blob => {
+    const dt = document.getElementById("dataSessao942").value.replace(/\//g, "_") || "942";
+    const filename = `${dt}_PROCLAMACOES_942.docx`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+    showStatus("statusWord", `✓ Documento "${filename}" gerado com sucesso!`, "success");
+    showToast("Documento Word gerado!", "success");
+  }).catch(err => {
+    showStatus("statusWord", `Erro ao gerar: ${err.message}`, "error");
+    console.error(err);
+  });
+}
+
+// ============================================================
+//  UTILIDADES
+// ============================================================
+function showStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = "status " + type;
+}
+
+function showToast(msg, type) {
+  const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+// Date mask
+document.getElementById("dataSessao942").addEventListener("input", function() {
+  let v = this.value.replace(/\D/g, "");
+  if (v.length > 8) v = v.substring(0, 8);
+  if (v.length > 4) v = v.substring(0,2) + "/" + v.substring(2,4) + "/" + v.substring(4);
+  else if (v.length > 2) v = v.substring(0,2) + "/" + v.substring(2);
+  this.value = v;
+});
+
+// ============================================================
+//  PERSISTÊNCIA COMPLETA (localStorage)
+// ============================================================
+const STORAGE_KEY_942 = "proclamacao_942_campos";
+const STORAGE_KEY_ESTADO = "proclamacao_942_estado";
+const PERSIST_FIELDS_942 = ["turma","dataSessao942","presidente942","convocadoPadrao1","convocadoPadrao2","certidoesTexto","cnjControle"];
+const PERSIST_CHECKS_942 = ["convocadoPadraoJuiz1","convocadoPadraoJuiz2"];
+
+function saveFields942() {
+  const data = {};
+  for (const id of PERSIST_FIELDS_942) {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.value;
+  }
+  for (const id of PERSIST_CHECKS_942) {
+    const el = document.getElementById(id);
+    if (el) data[id] = el.checked;
+  }
+  try { localStorage.setItem(STORAGE_KEY_942, JSON.stringify(data)); } catch(e) {}
+}
+
+function restoreFields942() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_942);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    for (const id of PERSIST_FIELDS_942) {
+      const el = document.getElementById(id);
+      if (el && data[id]) el.value = data[id];
+    }
+    for (const id of PERSIST_CHECKS_942) {
+      const el = document.getElementById(id);
+      if (el && data[id] !== undefined) el.checked = data[id];
+    }
+  } catch(e) {}
+}
+
+function salvarEstadoCompleto() {
+  try {
+    const estado = {
+      processosExtraidos,
+      votos,
+      etapaAtual: getEtapaAtual(),
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY_ESTADO, JSON.stringify(estado));
+  } catch(e) { console.warn("Erro ao salvar estado:", e); }
+}
+
+function restaurarEstadoCompleto() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_ESTADO);
+    if (!raw) return;
+    const estado = JSON.parse(raw);
+
+    if (estado.processosExtraidos && estado.processosExtraidos.length > 0) {
+      processosExtraidos = estado.processosExtraidos;
+
+      // Restaurar votos
+      if (estado.votos) {
+        Object.keys(estado.votos).forEach(k => { votos[k] = estado.votos[k]; });
+      }
+
+      // Reconstruir UI
+      exibirTabelaConferencia();
+      renderVotacao();
+
+      showToast(`Sessão restaurada (${processosExtraidos.length} processos)`, "success");
+    }
+  } catch(e) { console.warn("Erro ao restaurar estado:", e); }
+}
+
+function getEtapaAtual() {
+  
+  if (Object.keys(votos).length > 0) return 4;
+  if (processosExtraidos.length > 0) return 3;
+  return 1;
+}
+
+// ============================================================
+//  EXPORTAR / IMPORTAR SESSÃO (arquivo JSON)
+// ============================================================
+function exportarSessao() {
+  // Coletar votos atualizados do DOM antes de exportar
+  processosExtraidos.forEach((p, i) => {
+    salvarVotoEstado(i);
+  });
+
+  const campos = {};
+  for (const id of PERSIST_FIELDS_942) {
+    const el = document.getElementById(id);
+    if (el) campos[id] = el.value;
+  }
+
+  const exportData = {
+    versao: "1.1",
+    dataExportacao: new Date().toISOString(),
+    campos,
+    processosExtraidos,
+    votos,
+    etapaAtual: getEtapaAtual()
+  };
+
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+  const agora = new Date();
+  const dtHora = agora.toLocaleDateString("pt-BR").replace(/\//g, "-") + "_" + agora.toLocaleTimeString("pt-BR").replace(/:/g, "h").replace(/h(\d{2})$/, "m$1");
+  const filename = `Proclamação turma ampliada ${dtHora}.json`;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Sessão salva: ${filename}`, "success");
+}
+
+function importarSessao(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (!data.processosExtraidos) throw new Error("Arquivo inválido: não contém dados de processos.");
+
+      // Restaurar campos
+      if (data.campos) {
+        for (const id of PERSIST_FIELDS_942) {
+          const el = document.getElementById(id);
+          if (el && data.campos[id] !== undefined) el.value = data.campos[id];
+        }
+        saveFields942();
+      }
+
+      // Restaurar estado
+      processosExtraidos = data.processosExtraidos;
+      if (data.votos) {
+        Object.keys(data.votos).forEach(k => { votos[k] = data.votos[k]; });
+      }
+
+      // Reconstruir UI
+      exibirTabelaConferencia();
+      renderVotacao();
+
+      salvarEstadoCompleto();
+      showToast(`Sessão importada: ${processosExtraidos.length} processos`, "success");
+
+    } catch(err) {
+      showToast(`Erro na importação: ${err.message}`, "error");
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ""; // reset file input
+}
+
+function limparSessao() {
+  if (!confirm("Tem certeza? Isso apagará TODOS os dados: configuração da sessão, certidões, processos extraídos e votos.")) return;
+
+  // Limpar estado em memória
+  processosExtraidos = [];
+  Object.keys(votos).forEach(k => delete votos[k]);
+  pdfTextos = [];
+  textoCertidoes = "";
+  window._proclamacoes = null;
+
+  // Limpar localStorage
+  try {
+    localStorage.removeItem(STORAGE_KEY_ESTADO);
+    localStorage.removeItem(STORAGE_KEY_942);
+  } catch(e) {}
+
+  // Limpar campos da Etapa 1
+  const camposLimpar = ["turma", "dataSessao942", "presidente942", "convocadoPadrao1", "convocadoPadrao2"];
+  camposLimpar.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  // Limpar checkboxes
+  ["convocadoPadraoJuiz1", "convocadoPadraoJuiz2"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+
+  // Limpar campos da Etapa 2
+  document.getElementById("certidoesTexto").value = "";
+  document.getElementById("cnjControle").value = "";
+  const respostaManual = document.getElementById("respostaManual");
+  if (respostaManual) respostaManual.value = "";
+
+  // Limpar PDFs
+  renderPdfFileList();
+
+  // Limpar status e validações
+  document.getElementById("statusProcessar").className = "status";
+  document.getElementById("statusProcessar").textContent = "";
+  document.getElementById("validationList").innerHTML = "";
+  const statusWord = document.getElementById("statusWord");
+  if (statusWord) { statusWord.className = "status"; statusWord.textContent = ""; }
+
+  // Restaurar placeholders dos cards
+  document.getElementById("tabelaConferencia").innerHTML = '<div style="text-align:center; color:#aaa; padding:24px; font-size:13px;">Aguardando processamento das certidões (Etapa 2)...</div>';
+  document.getElementById("votacaoContainer").innerHTML = '<div style="text-align:center; color:#aaa; padding:24px; font-size:13px;">Aguardando conferência dos dados (Etapa 3)...</div>';
+
+  // Limpar busca
+  const buscaInput = document.getElementById("buscaProcesso");
+  if (buscaInput) buscaInput.value = "";
+  const buscaCounter = document.getElementById("buscaCounter");
+  if (buscaCounter) buscaCounter.textContent = "";
+  const buscaClear = document.getElementById("buscaClear");
+  if (buscaClear) buscaClear.style.display = "none";
+
+  showToast("Todos os dados foram apagados.", "success");
+}
+
+// Inicialização
+restoreFields942();
+restaurarAPIs();
+restaurarEstadoCompleto();
+
+for (const id of PERSIST_FIELDS_942) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("input", saveFields942);
+}
+
+</script>
+</body>
+</html>
